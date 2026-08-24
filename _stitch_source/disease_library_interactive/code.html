@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Thư viện bệnh - LEAF_AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#6cfad4",
+                        "surface-container": "#1c201f",
+                        "on-surface": "#e0e3e0",
+                        "outline-variant": "#3b4a45",
+                        "inverse-surface": "#e0e3e0",
+                        "on-primary-fixed-variant": "#005141",
+                        "surface-tint": "#32deb9",
+                        "surface-variant": "#323634",
+                        "on-primary": "#00382c",
+                        "on-secondary-fixed": "#002018",
+                        "tertiary-fixed-dim": "#c0c8c5",
+                        "tertiary": "#d0d9d5",
+                        "on-tertiary": "#2a3230",
+                        "tertiary-container": "#b4bdba",
+                        "surface-container-high": "#272b29",
+                        "primary-container": "#19d3ae",
+                        "on-secondary-container": "#004234",
+                        "on-tertiary-fixed-variant": "#404946",
+                        "surface-container-low": "#181c1b",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed": "#dce4e1",
+                        "primary": "#4cf0c9",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#2d3130",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#32deb9",
+                        "surface-container-lowest": "#0b0f0e",
+                        "secondary": "#4addb9",
+                        "surface-bright": "#363a38",
+                        "on-surface-variant": "#bacac3",
+                        "surface": "#101413",
+                        "inverse-primary": "#006b57",
+                        "background": "#101413",
+                        "error-container": "#93000a",
+                        "outline": "#85948e",
+                        "surface-container-highest": "#323634",
+                        "on-background": "#e0e3e0",
+                        "surface-dim": "#101413",
+                        "on-secondary": "#00382c",
+                        "on-secondary-fixed-variant": "#005140",
+                        "primary-fixed": "#5bfbd4",
+                        "on-tertiary-fixed": "#151d1b",
+                        "on-primary-fixed": "#002019",
+                        "on-primary-container": "#005645",
+                        "secondary-container": "#00b896",
+                        "secondary-fixed-dim": "#4addb9",
+                        "on-tertiary-container": "#444d4a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-padding-mobile": "20px",
+                        "container-padding-desktop": "40px",
+                        "unit": "8px",
+                        "section-gap": "80px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "500" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-sm": ["12px", { "lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for horizontal lists */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Padding for Bottom Nav */
+        body { padding-bottom: calc(64px + 24px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background antialiased md:hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top App Bar -->
+<header class="bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-xl sticky top-0 mx-0 z-50 flex justify-between items-center px-6 py-3 border-b border-white/5">
+<div class="flex items-center gap-2">
+<span class="font-display-lg-mobile text-primary tracking-tighter text-2xl font-extrabold">LEAF_AI</span>
+</div>
+</header>
+<main class="px-container-padding-mobile pt-gutter flex flex-col gap-gutter">
+<!-- Header & Search -->
+<section class="flex flex-col gap-4">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-on-surface">Khám phá bệnh cây trồng</h1>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-high border border-outline-variant rounded-full py-3 pl-12 pr-4 text-body-md font-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Tìm kiếm bệnh hoặc cây trồng..." type="text"/>
+</div>
+</section>
+<!-- Filter Chips -->
+<section class="-mx-container-padding-mobile px-container-padding-mobile overflow-x-auto hide-scrollbar">
+<div class="flex gap-2 w-max pb-2">
+<button class="bg-primary/20 text-primary border border-primary px-4 py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap active:scale-95 transition-transform">Tất cả</button>
+<button class="bg-surface-container-high text-on-surface-variant border border-outline-variant px-4 py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap active:scale-95 transition-transform hover:bg-surface-variant">Cà chua</button>
+<button class="bg-surface-container-high text-on-surface-variant border border-outline-variant px-4 py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap active:scale-95 transition-transform hover:bg-surface-variant">Khoai tây</button>
+<button class="bg-surface-container-high text-on-surface-variant border border-outline-variant px-4 py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap active:scale-95 transition-transform hover:bg-surface-variant">Táo</button>
+<button class="bg-surface-container-high text-on-surface-variant border border-outline-variant px-4 py-2 rounded-full font-label-sm text-label-sm whitespace-nowrap active:scale-95 transition-transform hover:bg-surface-variant">Ngô</button>
+</div>
+</section>
+<!-- Disease Grid -->
+<section class="grid grid-cols-1 gap-4">
+<!-- Card 1 -->
+<article class="bg-surface-container rounded-xl border border-outline-variant/30 overflow-hidden flex flex-col">
+<div class="relative h-40 w-full">
+<div class="bg-cover bg-center w-full h-full opacity-80 mix-blend-luminosity" data-alt="Close up macro photography of a tomato leaf infected with early blight. The leaf shows distinct dark concentric rings and yellow halos against a moody, dark, high-tech laboratory background. High contrast, scientific aesthetic, sharp focus." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB9PjctJE0nFBZtBhPOTtCxmngULBV7lm5_EySoDw_wGDxDFSisj53zsC3lXDmg8c_IBd5r5cSBKJpQxF8csMo9TbHtrZbrAC48OfIwZvYxGE07NWxmI-1r6Ao1mXJJygyGTrAiMYAorZFDbR_VNk78-QapRUQvPuG2Tp-zOpwEEEIggJM-5af0AnYNS_VoRs0plkYrYS-z-ZvJPeMwWH7XHna3ayQML801Pm3JzCuHkWZD1g8VLbhJ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent"></div>
+<div class="absolute top-3 left-3 bg-error/10 border border-error text-error px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-md">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+<span class="font-label-sm text-[10px] uppercase tracking-wider">Mức độ nặng</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2 -mt-6 relative z-10">
+<div class="flex justify-between items-start">
+<div>
+<span class="text-secondary font-label-sm text-label-sm">Cà chua</span>
+<h2 class="font-headline-md text-headline-md text-on-surface leading-tight mt-1">Bệnh úa sớm</h2>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm line-clamp-2 mt-2">Nấm Alternaria solani gây ra các vết đốm sẫm màu với các vòng tròn đồng tâm, dẫn đến rụng lá và giảm năng suất.</p>
+<button class="mt-4 w-full bg-transparent border border-primary text-primary font-body-md text-body-md py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-primary/5 active:scale-[0.98] transition-all">
+                        Xem chi tiết
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container rounded-xl border border-outline-variant/30 overflow-hidden flex flex-col">
+<div class="relative h-40 w-full">
+<div class="bg-cover bg-center w-full h-full opacity-80 mix-blend-luminosity" data-alt="Microscopic, scientific visualization of potato late blight on a leaf. Dark green background with precise, glowing emerald and subtle white fuzzy fungal growth on the leaf underside. Cinematic lighting, deep shadows, high-end technical agricultural imagery." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA4JNL_PzzXJDPE6ezQ0I8gH4uuiFMxiVyqJwviDSF2PBiEKL7M4fiid97c8hzcEAPWx1nVHjPXm9H56R1BCUUx9jqd6nid3tFvbX9q4X9d9FJTorJOhJxYYz-7GOHdzhZPwrkNcWqxrZTAafdrADBYZc13uzG3t-Gd3OgBcK8VQ1vQsW5CGFgzdhEATPGlM94ETrMBZ_Kg67d_jUSTHyCaU1BNoUY-MwwCkOME0qCCUvJYzzPD5u-T')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent"></div>
+<div class="absolute top-3 left-3 bg-error/10 border border-error text-error px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-md">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+<span class="font-label-sm text-[10px] uppercase tracking-wider">Nghiêm trọng</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2 -mt-6 relative z-10">
+<div class="flex justify-between items-start">
+<div>
+<span class="text-secondary font-label-sm text-label-sm">Khoai tây</span>
+<h2 class="font-headline-md text-headline-md text-on-surface leading-tight mt-1">Bệnh sương mai</h2>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm line-clamp-2 mt-2">Phytophthora infestans gây hoại tử lá nhanh chóng và thối củ tàn khốc.</p>
+<button class="mt-4 w-full bg-transparent border border-primary text-primary font-body-md text-body-md py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-primary/5 active:scale-[0.98] transition-all">
+                        Xem chi tiết
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-surface-container rounded-xl border border-outline-variant/30 overflow-hidden flex flex-col">
+<div class="relative h-40 w-full">
+<div class="bg-cover bg-center w-full h-full opacity-80 mix-blend-luminosity" data-alt="Apple leaf showing signs of powdery mildew. White powdery spots on the leaf surface. High-tech, dark mode aesthetic, illuminated by a soft, analytical cool blue and emerald light. Deep black background, precise and scientific." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAkNbcw1rCulfItXRjHv8HGQ9o6J7p8tOd1V5qZlgXkhv6M5xWX3lxqEOnQq0LnJZhsM1kex39Q6iyjra1lkryihnWoso6kp5OBxFd9FIBJfDqa-pA2Wp9eU3lDnxofPaPuBDG_CjCOGLpaKsbTas8ygtskvuLG6ELR7RQmqswxjtTOUqTtfQunL1xSK2lLJaobHKYs3t8nbr_ZOJqCwpwPNVTaXBgdC2wHpeA23_JmIaZsassoK4jp')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent"></div>
+<div class="absolute top-3 left-3 bg-secondary/10 border border-secondary text-secondary px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-md">
+<span class="material-symbols-outlined text-[14px]">info</span>
+<span class="font-label-sm text-[10px] uppercase tracking-wider">Trung bình</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2 -mt-6 relative z-10">
+<div class="flex justify-between items-start">
+<div>
+<span class="text-secondary font-label-sm text-label-sm">Táo</span>
+<h2 class="font-headline-md text-headline-md text-on-surface leading-tight mt-1">Bệnh phấn trắng</h2>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm line-clamp-2 mt-2">Podosphaera leucotricha xuất hiện dưới dạng nấm mốc trắng, có phấn trên lá và chồi non.</p>
+<button class="mt-4 w-full bg-transparent border border-primary text-primary font-body-md text-body-md py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-primary/5 active:scale-[0.98] transition-all">
+                        Xem chi tiết
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</article>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface/90 dark:bg-surface/90 backdrop-blur-xl fixed bottom-0 w-full rounded-t-xl shadow-2xl fixed bottom-0 left-0 w-full z-50 flex justify-around items-center pt-3 pb-6 px-4">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_5}}">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">home_max</span>
+<span class="font-label-sm text-label-sm">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_3}}">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">database</span>
+<span class="font-label-sm text-label-sm">Thư viện</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_2}}">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">history</span>
+<span class="font-label-sm text-label-sm">Lịch sử</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_4}}">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">potted_plant</span>
+<span class="font-label-sm text-label-sm">Chăm sóc</span>
+</a>
+</nav>
+</body></html>

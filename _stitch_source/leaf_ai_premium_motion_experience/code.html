@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LEAF_AI - Chẩn đoán</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#6cfad4",
+                        "surface-container": "#1c201f",
+                        "on-surface": "#e0e3e0",
+                        "outline-variant": "#3b4a45",
+                        "inverse-surface": "#e0e3e0",
+                        "on-primary-fixed-variant": "#005141",
+                        "surface-tint": "#32deb9",
+                        "surface-variant": "#323634",
+                        "on-primary": "#00382c",
+                        "on-secondary-fixed": "#002018",
+                        "tertiary-fixed-dim": "#c0c8c5",
+                        "tertiary": "#d0d9d5",
+                        "on-tertiary": "#2a3230",
+                        "tertiary-container": "#b4bdba",
+                        "surface-container-high": "#272b29",
+                        "primary-container": "#19d3ae",
+                        "on-secondary-container": "#004234",
+                        "on-tertiary-fixed-variant": "#404946",
+                        "surface-container-low": "#181c1b",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed": "#dce4e1",
+                        "primary": "#4cf0c9",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#2d3130",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#32deb9",
+                        "surface-container-lowest": "#0b0f0e",
+                        "secondary": "#4addb9",
+                        "surface-bright": "#363a38",
+                        "on-surface-variant": "#bacac3",
+                        "surface": "#101413",
+                        "inverse-primary": "#006b57",
+                        "background": "#101413",
+                        "error-container": "#93000a",
+                        "outline": "#85948e",
+                        "surface-container-highest": "#323634",
+                        "on-background": "#e0e3e0",
+                        "surface-dim": "#101413",
+                        "on-secondary": "#00382c",
+                        "on-secondary-fixed-variant": "#005140",
+                        "primary-fixed": "#5bfbd4",
+                        "on-tertiary-fixed": "#151d1b",
+                        "on-primary-fixed": "#002019",
+                        "on-primary-container": "#005645",
+                        "secondary-container": "#00b896",
+                        "secondary-fixed-dim": "#4addb9",
+                        "on-tertiary-container": "#444d4a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-padding-mobile": "20px",
+                        "container-padding-desktop": "40px",
+                        "unit": "8px",
+                        "section-gap": "80px",
+                        "safe": "env(safe-area-inset-bottom, 20px)"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "500" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-sm": ["12px", { "lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: transparent;
+            color: theme('colors.on-background');
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            min-height: max(884px, 100dvh);
+            overflow-x: hidden;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(16, 20, 19, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Scanning animation */
+        @keyframes scan-line {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .scanner-line {
+            animation: scan-line 2s linear infinite;
+        }
+
+        /* Pulse for glowing elements */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; filter: drop-shadow(0 0 5px theme('colors.primary-container')); transform: scale(1); }
+            50% { opacity: 1; filter: drop-shadow(0 0 15px theme('colors.primary-container')); transform: scale(1.05); }
+        }
+
+        .logo-pulse {
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+
+        /* Hide scrollbar for clean UI */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Transitions */
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1), transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hidden-state {
+            display: none !important;
+        }
+
+        .stagger-1 { transition-delay: 100ms; }
+        .stagger-2 { transition-delay: 200ms; }
+        .stagger-3 { transition-delay: 300ms; }
+
+        /* Card Hover Effects */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(25, 211, 174, 0.15);
+            border-color: rgba(25, 211, 174, 0.3);
+        }
+
+        /* Button Hover Effects */
+        .btn-hover {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-hover:hover {
+            transform: scale(1.02);
+        }
+        .btn-hover:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="text-on-background min-h-screen flex flex-col relative pb-[90px]">
+<canvas id="bg-canvas"></canvas>
+<!-- TopAppBar -->
+<div class="hidden md:flex bg-surface-container/60 dark:bg-surface-container/60 backdrop-blur-xl sticky top-gutter mx-gutter rounded-full border border-white/5 shadow-xl justify-between items-center px-6 py-3 z-50 fade-enter fade-enter-active stagger-1">
+<div class="flex items-center gap-2 logo-pulse">
+<span class="material-symbols-outlined text-primary font-headline-md text-headline-md">psychology_alt</span>
+<span class="font-display-lg text-primary tracking-tighter text-xl leading-none">LEAF_AI</span>
+</div>
+<nav class="flex gap-6">
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200" href="{{DATA:SCREEN:SCREEN_5}}">Trang chủ</a>
+<a class="text-primary font-body-md text-body-md hover:text-primary-fixed transition-colors duration-200" href="{{DATA:SCREEN:SCREEN_3}}">Chẩn đoán</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200" href="{{DATA:SCREEN:SCREEN_4}}">Thư viện</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200" href="{{DATA:SCREEN:SCREEN_2}}">Lịch sử</a>
+</nav>
+</div>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col p-container-padding-mobile md:p-container-padding-desktop max-w-[1440px] mx-auto w-full gap-8">
+<!-- Header Section -->
+<header class="flex flex-col gap-2 mt-4 md:mt-8 fade-enter fade-enter-active stagger-1">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">Chẩn đoán cây của bạn</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Tải lên hình ảnh rõ nét của lá bị ảnh hưởng để model phân tích tình trạng cây trồng.</p>
+</header>
+<!-- Default State: Upload Interface -->
+<section class="flex flex-col gap-6 fade-enter-active stagger-2" id="upload-section">
+<!-- Dropzone -->
+<div class="relative w-full aspect-[4/3] md:aspect-[21/9] rounded-xl border-2 border-dashed border-outline-variant hover:border-primary-container transition-all duration-300 flex flex-col items-center justify-center gap-4 glass-panel overflow-hidden group cursor-pointer card-hover" id="dropzone">
+<input accept="image/*" class="hidden" id="file-upload" type="file"/>
+<div class="p-4 rounded-full bg-surface-container-high group-hover:scale-110 group-hover:bg-primary-container/20 transition-all duration-300">
+<span class="material-symbols-outlined text-primary-container text-4xl" style="font-variation-settings: 'wght' 300;">add_a_photo</span>
+</div>
+<div class="text-center px-4">
+<p class="font-body-lg text-body-lg text-on-surface mb-1">Thả ảnh lá của bạn vào đây hoặc nhấp để chọn</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Hỗ trợ JPG, PNG lên đến 10MB</p>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex gap-4">
+<button class="flex-1 bg-primary-container text-on-primary font-body-lg text-body-lg py-4 rounded-xl flex items-center justify-center gap-2 btn-hover" id="btn-upload">
+<span class="material-symbols-outlined text-xl">upload_file</span>
+                    Tải ảnh lên
+                </button>
+<button class="flex-1 bg-transparent border border-primary-container text-secondary font-body-lg text-body-lg py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-primary-container/10 btn-hover">
+<span class="material-symbols-outlined text-xl">photo_camera</span>
+                    Chụp ảnh
+                </button>
+</div>
+</section>
+<!-- Selected / Analyzing State -->
+<section class="flex flex-col gap-6 relative hidden-state" id="analysis-section">
+<h2 class="font-headline-md text-headline-md text-on-surface">Xem trước phân tích</h2>
+<div class="relative rounded-xl overflow-hidden glass-panel aspect-[4/5] md:aspect-[21/9]" id="three-container">
+<!-- 3D Canvas will be injected here -->
+<!-- Scanning Elements (Hidden initially in selected state) -->
+<div class="hidden-state w-full h-full absolute top-0 left-0" id="scanning-elements">
+<div class="absolute inset-0 bg-primary-container/10 mix-blend-screen"></div>
+<div class="absolute left-0 w-full h-[3px] bg-primary-container shadow-[0_0_25px_rgba(25,211,174,1)] scanner-line z-10"></div>
+<div class="absolute top-4 left-4 bg-surface/80 backdrop-blur-md rounded-full px-4 py-2 border border-primary/30 flex items-center gap-2 z-20">
+<div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+<span class="font-label-sm text-label-sm text-primary tracking-wider">ĐANG PHÂN TÍCH LÁ...</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4" id="selected-actions">
+<button class="flex-1 bg-primary-container text-on-primary font-body-lg text-body-lg py-4 rounded-xl flex items-center justify-center gap-2 btn-hover shadow-lg shadow-primary-container/20" id="btn-analyze">
+                    Phân tích
+                </button>
+<button class="flex-1 bg-transparent border border-outline-variant text-on-surface font-body-lg text-body-lg py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-surface-container/50 btn-hover" id="btn-cancel">
+                    Hủy
+                </button>
+</div>
+</section>
+<!-- Final Result Card -->
+<section class="flex flex-col gap-4 mt-4 pb-8 hidden-state" id="result-section">
+<div class="glass-panel rounded-xl p-6 flex flex-col md:flex-row gap-6 items-start md:items-center card-hover">
+<!-- Confidence Ring -->
+<div class="relative w-24 h-24 shrink-0 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle class="text-surface-container-highest" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="6"></circle>
+<circle class="text-primary-container" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="282.7" stroke-dashoffset="15" stroke-linecap="round" stroke-width="6" style="transition: stroke-dashoffset 1s ease-out;"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-headline-md text-headline-md text-primary-container leading-none">94%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant opacity-70">CONF</span>
+</div>
+</div>
+<!-- Diagnosis Details -->
+<div class="flex-grow flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<h3 class="font-headline-md text-headline-md text-on-surface">Bệnh sương mai cà chua</h3>
+<span class="px-3 py-1 rounded-full bg-error/10 text-error border border-error/20 font-label-sm text-label-sm uppercase tracking-widest">Trung bình</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Phát hiện tác nhân gây bệnh: Phytophthora infestans. Khuyến nghị hành động ngay lập tức để ngăn chặn sự lây lan sang các cây lân cận.</p>
+</div>
+<!-- Action Button -->
+<div class="flex flex-col gap-2 w-full md:w-auto">
+<button class="w-full bg-transparent border border-primary-container text-secondary font-body-lg text-body-lg px-6 py-3 rounded-xl hover:bg-primary-container/10 btn-hover whitespace-nowrap">
+                        Xem kế hoạch điều trị
+                    </button>
+<button class="w-full text-on-surface-variant font-body-sm text-sm py-2 hover:text-primary transition-colors btn-hover" id="btn-reset">
+                        Thử ảnh khác
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden glass-panel fixed bottom-0 w-full rounded-t-xl border-t border-outline-variant shadow-2xl z-50 flex justify-around items-center pt-3 pb-safe px-4 fade-enter fade-enter-active stagger-3">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform gap-1 w-16" href="{{DATA:SCREEN:SCREEN_5}}">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">home_max</span>
+<span class="font-label-sm text-label-sm">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:text-primary-fixed active:scale-90 transition-transform gap-1 w-16" href="{{DATA:SCREEN:SCREEN_3}}">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600, 'FILL' 1;">potted_plant</span>
+<span class="font-label-sm text-label-sm">Chăm sóc</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform gap-1 w-16" href="{{DATA:SCREEN:SCREEN_4}}">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">database</span>
+<span class="font-label-sm text-label-sm">Thư viện</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform gap-1 w-16" href="{{DATA:SCREEN:SCREEN_2}}">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">history</span>
+<span class="font-label-sm text-label-sm">Lịch sử</span>
+</a>
+</nav>
+<script>
+        // WebGL Background Shader
+        const canvas = document.getElementById('bg-canvas');
+        const gl = canvas.getContext('webgl');
+
+        if (gl) {
+            const vertexShaderSource = `
+                attribute vec2 position;
+                varying vec2 v_texCoord;
+                void main() {
+                    gl_Position = vec4(position, 0.0, 1.0);
+                    v_texCoord = position * 0.5 + 0.5;
+                }
+            `;
+
+            const fragmentShaderSource = `
+                precision highp float;
+                varying vec2 v_texCoord;
+                uniform float u_time;
+                uniform vec2 u_resolution;
+                uniform vec2 u_mouse;
+
+                vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+
+                float snoise(vec2 v) {
+                  const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+                  vec2 i  = floor(v + dot(v, C.yy) );
+                  vec2 x0 = v -   i + dot(i, C.xx);
+                  vec2 i1;
+                  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+                  vec4 x12 = x0.xyxy + C.xxzz;
+                  x12.xy -= i1;
+                  i = mod289(i);
+                  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+                  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+                  m = m*m ;
+                  m = m*m ;
+                  vec3 x = 2.0 * fract(p * C.www) - 1.0;
+                  vec3 h = abs(x) - 0.5;
+                  vec3 ox = floor(x + 0.5);
+                  vec3 a0 = x - ox;
+                  m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+                  vec3 g;
+                  g.x  = a0.x  * x0.x  + h.x  * x0.y;
+                  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+                  return 130.0 * dot(m, g);
+                }
+
+                void main() {
+                  vec2 uv = v_texCoord;
+                  vec2 mouse = u_mouse / u_resolution;
+                  
+                  float n = snoise(uv * 3.0 + u_time * 0.1);
+                  n += 0.5 * snoise(uv * 6.0 - u_time * 0.15);
+                  
+                  // Base colors from LEAF_AI design system
+                  vec3 color1 = vec3(0.02, 0.03, 0.03); // Near black
+                  vec3 color2 = vec3(0.1, 0.827, 0.682); // Emerald #19D3AE
+                  vec3 color3 = vec3(0.333, 0.902, 0.757); // Mint #55E6C1
+                  
+                  float dist = distance(uv, mouse);
+                  float influence = smoothstep(0.5, 0.0, dist);
+                  
+                  vec3 finalColor = mix(color1, color2, n * 0.4 + 0.1);
+                  finalColor = mix(finalColor, color3, influence * 0.2);
+                  
+                  // Vignette
+                  float vignette = 1.0 - smoothstep(0.4, 1.5, length(uv - 0.5));
+                  finalColor *= vignette;
+                  
+                  gl_FragColor = vec4(finalColor, 1.0);
+                }
+            `;
+
+            function createShader(gl, type, source) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                return shader;
+            }
+
+            const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+            const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+            const program = gl.createProgram();
+            gl.attachShader(program, vertexShader);
+            gl.attachShader(program, fragmentShader);
+            gl.linkProgram(program);
+            gl.useProgram(program);
+
+            const positionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            const positions = new Float32Array([
+                -1.0, -1.0,
+                 1.0, -1.0,
+                -1.0,  1.0,
+                -1.0,  1.0,
+                 1.0, -1.0,
+                 1.0,  1.0,
+            ]);
+            gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+            const positionLocation = gl.getAttribLocation(program, "position");
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+            const timeLocation = gl.getUniformLocation(program, "u_time");
+            const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+            const mouseLocation = gl.getUniformLocation(program, "u_mouse");
+
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            function render(time) {
+                gl.uniform1f(timeLocation, time * 0.001);
+                gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+                gl.uniform2f(mouseLocation, mouseX, canvas.height - mouseY);
+
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+                requestAnimationFrame(render);
+            }
+            requestAnimationFrame(render);
+        }
+
+        // Initialize Three.js 3D Scanner in container
+        let threeScene, threeRenderer, animationId;
+        function initThreeJS() {
+            const container = document.getElementById('three-container');
+            if(container.querySelector('canvas')) return; // Already initialized
+
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            threeScene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            threeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            threeRenderer.setSize(width, height);
+            threeRenderer.setPixelRatio(window.devicePixelRatio);
+            
+            // Add canvas as first child
+            container.insertBefore(threeRenderer.domElement, container.firstChild);
+            threeRenderer.domElement.style.position = 'absolute';
+            threeRenderer.domElement.style.top = '0';
+            threeRenderer.domElement.style.left = '0';
+            threeRenderer.domElement.style.zIndex = '1';
+
+            // Organic Leaf-like geometry
+            const geometry = new THREE.IcosahedronGeometry(1.5, 3);
+            const material = new THREE.MeshPhongMaterial({
+              color: 0x19D3AE,
+              wireframe: true,
+              transparent: true,
+              opacity: 0.6,
+              emissive: 0x19D3AE,
+              emissiveIntensity: 0.5
+            });
+            const leaf = new THREE.Mesh(geometry, material);
+            threeScene.add(leaf);
+
+            // Scanning Ring
+            const ringGeo = new THREE.TorusGeometry(2, 0.02, 16, 100);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x55E6C1, transparent: true, opacity: 0.8 });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            threeScene.add(ring);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            threeScene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0x19D3AE, 2, 10);
+            pointLight.position.set(2, 3, 4);
+            threeScene.add(pointLight);
+
+            camera.position.z = 5;
+
+            let time = 0;
+            function animate() {
+              animationId = requestAnimationFrame(animate);
+              time += 0.01;
+              
+              leaf.rotation.y += 0.005;
+              leaf.rotation.x += 0.002;
+              
+              // Pulse effect
+              leaf.scale.setScalar(1 + Math.sin(time * 2) * 0.05);
+              
+              // Scanning movement
+              ring.position.y = Math.sin(time * 2) * 1.5;
+              ring.material.opacity = 0.5 + Math.cos(time * 2) * 0.3;
+              
+              threeRenderer.render(threeScene, camera);
+            }
+
+            animate();
+
+            // Handle resize for this specific container
+            const resizeObserver = new ResizeObserver(entries => {
+                for (let entry of entries) {
+                    const nw = entry.contentRect.width;
+                    const nh = entry.contentRect.height;
+                    camera.aspect = nw / nh;
+                    camera.updateProjectionMatrix();
+                    threeRenderer.setSize(nw, nh);
+                }
+            });
+            resizeObserver.observe(container);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadSection = document.getElementById('upload-section');
+            const analysisSection = document.getElementById('analysis-section');
+            const resultSection = document.getElementById('result-section');
+            
+            const dropzone = document.getElementById('dropzone');
+            const fileUpload = document.getElementById('file-upload');
+            const btnUpload = document.getElementById('btn-upload');
+            
+            const scanningElements = document.getElementById('scanning-elements');
+            const selectedActions = document.getElementById('selected-actions');
+            
+            const btnAnalyze = document.getElementById('btn-analyze');
+            const btnCancel = document.getElementById('btn-cancel');
+            const btnReset = document.getElementById('btn-reset');
+
+            // Helper to show with animation
+            const showSection = (el) => {
+                el.classList.remove('hidden-state');
+                el.classList.add('fade-enter');
+                setTimeout(() => {
+                    el.classList.remove('fade-enter');
+                    el.classList.add('fade-enter-active');
+                }, 10);
+            };
+
+            const hideSection = (el) => {
+                el.classList.add('hidden-state');
+                el.classList.remove('fade-enter-active');
+            };
+
+            // Trigger file selection
+            const triggerSelect = () => {
+                hideSection(uploadSection);
+                showSection(analysisSection);
+                hideSection(scanningElements);
+                showSection(selectedActions);
+                hideSection(resultSection);
+                // Initialize 3D when section is shown
+                setTimeout(initThreeJS, 100);
+            };
+
+            dropzone.addEventListener('click', triggerSelect);
+            btnUpload.addEventListener('click', triggerSelect);
+
+            // Cancel selection
+            btnCancel.addEventListener('click', () => {
+                hideSection(analysisSection);
+                showSection(uploadSection);
+            });
+
+            // Analyze flow
+            btnAnalyze.addEventListener('click', () => {
+                hideSection(selectedActions);
+                showSection(scanningElements);
+                
+                // Simulate 3s scanning
+                setTimeout(() => {
+                    hideSection(scanningElements);
+                    showSection(resultSection);
+                }, 3000);
+            });
+
+            // Reset flow
+            btnReset.addEventListener('click', () => {
+                hideSection(analysisSection);
+                hideSection(resultSection);
+                showSection(uploadSection);
+            });
+            
+            // Add initial entrance animations for staggered elements
+            setTimeout(() => {
+                document.querySelectorAll('.fade-enter').forEach(el => {
+                    el.classList.add('fade-enter-active');
+                });
+            }, 100);
+        });
+    </script>
+</body></html>

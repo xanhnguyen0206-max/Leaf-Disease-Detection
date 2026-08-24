@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LEAFAI - Mobile Landing Page</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#6cfad4",
+                        "surface-container": "#1c201f",
+                        "on-surface": "#e0e3e0",
+                        "outline-variant": "#3b4a45",
+                        "inverse-surface": "#e0e3e0",
+                        "on-primary-fixed-variant": "#005141",
+                        "surface-tint": "#32deb9",
+                        "surface-variant": "#323634",
+                        "on-primary": "#00382c",
+                        "on-secondary-fixed": "#002018",
+                        "tertiary-fixed-dim": "#c0c8c5",
+                        "tertiary": "#d0d9d5",
+                        "on-tertiary": "#2a3230",
+                        "tertiary-container": "#b4bdba",
+                        "surface-container-high": "#272b29",
+                        "primary-container": "#19d3ae",
+                        "on-secondary-container": "#004234",
+                        "on-tertiary-fixed-variant": "#404946",
+                        "surface-container-low": "#181c1b",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed": "#dce4e1",
+                        "primary": "#4cf0c9",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#2d3130",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#32deb9",
+                        "surface-container-lowest": "#0b0f0e",
+                        "secondary": "#4addb9",
+                        "surface-bright": "#363a38",
+                        "on-surface-variant": "#bacac3",
+                        "surface": "#101413",
+                        "inverse-primary": "#006b57",
+                        "background": "#101413",
+                        "error-container": "#93000a",
+                        "outline": "#85948e",
+                        "surface-container-highest": "#323634",
+                        "on-background": "#e0e3e0",
+                        "surface-dim": "#101413",
+                        "on-secondary": "#00382c",
+                        "on-secondary-fixed-variant": "#005140",
+                        "primary-fixed": "#5bfbd4",
+                        "on-tertiary-fixed": "#151d1b",
+                        "on-primary-fixed": "#002019",
+                        "on-primary-container": "#005645",
+                        "secondary-container": "#00b896",
+                        "secondary-fixed-dim": "#4addb9",
+                        "on-tertiary-container": "#444d4a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-padding-mobile": "20px",
+                        "container-padding-desktop": "40px",
+                        "unit": "8px",
+                        "section-gap": "80px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "500" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-sm": ["12px", { "lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(13, 21, 19, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .emerald-glow {
+            box-shadow: 0 0 20px rgba(25, 211, 174, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="sticky top-gutter mx-gutter rounded-full border border-white/5 shadow-xl bg-surface-container/80 backdrop-blur-xl flex justify-between items-center px-6 py-3 z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary font-variation-settings: 'FILL' 1;">psychology_alt</span>
+<span class="font-display-lg text-primary tracking-tighter text-xl">LEAF_AI</span>
+</div>
+<button class="bg-primary-container text-on-primary-container font-label-sm text-label-sm px-4 py-2 rounded-full hover:opacity-80 transition-opacity active:scale-95 duration-200" onclick="window.location.href='{{DATA:SCREEN:SCREEN_4}}'">
+            Chẩn đoán
+        </button>
+</header>
+<main class="px-container-padding-mobile md:px-container-padding-desktop">
+<!-- Hero Section -->
+<section class="mt-12 flex flex-col items-start gap-6">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-container/10 border border-primary-container/20">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-sm text-primary-container">SỨC KHỎE CÂY TRỒNG CÔNG NGHỆ AI</span>
+</div>
+<h1 class="font-display-lg-mobile text-on-surface">
+                Phát hiện <span class="text-primary-container">Bệnh cây trồng.</span><br/>Nâng cao chất lượng đầu ra.
+            </h1>
+<p class="font-body-lg text-on-surface-variant max-w-sm">
+                Tải lên hình ảnh độ phân giải cao của lá cây có triệu chứng. Lớp trí tuệ nhân tạo của chúng tôi sẽ chẩn đoán các vấn đề với độ chính xác tốt nhất có thể.
+            </p>
+<div class="flex flex-col w-full gap-4 mt-4">
+<button class="w-full bg-primary-container text-on-primary-container font-label-sm text-label-sm py-4 rounded-xl flex justify-center items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-[0_0_15px_rgba(25,211,174,0.3)]" onclick="window.location.href='{{DATA:SCREEN:SCREEN_4}}'">
+<span class="material-symbols-outlined">add_a_photo</span>
+                    Chẩn đoán lá
+                </button>
+<button class="w-full border border-primary-container text-primary-container font-label-sm text-label-sm py-4 rounded-xl flex justify-center items-center gap-2 hover:bg-primary-container/5 active:scale-95 transition-all" onclick="window.location.href='{{DATA:SCREEN:SCREEN_3}}'">
+                    Khám phá bệnh
+                </button>
+</div>
+</section>
+<!-- Hero Visual (Bento/Glassmorphism) -->
+<section class="mt-section-gap relative w-full h-[400px] rounded-2xl overflow-hidden border border-outline-variant">
+<img class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-screen" data-alt="A highly detailed macro photography shot of a vibrant green plant leaf on a deep black studio background. The leaf shows intricate vein structures and water droplets. The lighting is cinematic and dramatic, emphasizing the texture of the leaf against the dark environment. Style is premium, scientific, and modern minimalist." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoK-gYnNiuWd5vey26VE3q0pohbu-2ELgYbSBTVutIDuMWiNUSnSTLjgPzTmU8wLtv3L9OjMfaVK7jyPH4J3GebE0PNWFf5OIHlIizUKb42HRuj7_zhcqAzOuFpn45TQYaGBU0DH5fVfrSm-XeMj84rFUhduzdjTK16t7CVLBDjdSQ2ikhuHDx9AhqPUa0dERbq3l4m5axGySLRN4JN9gCV-h9_J1rDrt08YG346xW2r1FevgOhJ2V"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-4 right-4 flex flex-col gap-3">
+<div class="glass-panel p-4 rounded-xl flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center border border-primary-container/30">
+<span class="material-symbols-outlined text-primary-container">psychology</span>
+</div>
+<div>
+<p class="font-label-sm text-on-surface-variant">Phát hiện AI</p>
+<p class="font-body-md text-on-surface">Lá khỏe mạnh</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary-container">check_circle</span>
+</div>
+<div class="glass-panel p-4 rounded-xl flex justify-between items-center border-t border-primary-container">
+<p class="font-label-sm text-on-surface-variant">Điểm tin cậy</p>
+<p class="font-headline-md text-primary-container">98.4%</p>
+</div>
+</div>
+</section>
+<!-- Statistics Section -->
+<section class="mt-section-gap grid grid-cols-2 gap-4">
+<div class="bg-surface-container p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
+<span class="material-symbols-outlined text-primary-container text-3xl">coronavirus</span>
+<h3 class="font-display-lg-mobile text-on-surface">50+</h3>
+<p class="font-label-sm text-on-surface-variant">Bệnh được hỗ trợ</p>
+</div>
+<div class="bg-surface-container p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
+<span class="material-symbols-outlined text-primary-container text-3xl">forest</span>
+<h3 class="font-display-lg-mobile text-on-surface">10+</h3>
+<p class="font-label-sm text-on-surface-variant">Loài thực vật</p>
+</div>
+<div class="bg-surface-container p-6 rounded-2xl border border-white/5 flex flex-col gap-2 col-span-2 items-center text-center emerald-glow border-t-primary-container/50">
+<h3 class="font-display-lg-mobile text-primary-container">85 - 95%+</h3>
+<p class="font-label-sm text-on-surface-variant">Độ chính xác chẩn đoán</p>
+</div>
+</section>
+<!-- How it Works Section -->
+<section class="mt-section-gap mb-section-gap">
+<h2 class="font-headline-md text-on-surface mb-8">Quy trình xử lý</h2>
+<div class="flex flex-col gap-6 relative">
+<div class="absolute left-6 top-6 bottom-6 w-px bg-outline-variant"></div>
+<div class="flex items-start gap-6 relative z-10">
+<div class="w-12 h-12 rounded-full bg-surface-container border border-outline-variant flex items-center justify-center shrink-0 shadow-lg">
+<span class="material-symbols-outlined text-on-surface">upload_file</span>
+</div>
+<div class="pt-2">
+<h4 class="font-body-lg text-on-surface">1. Tải ảnh lên</h4>
+<p class="font-label-sm text-on-surface-variant mt-1">Cung cấp ảnh chụp cận cảnh rõ nét của tán lá bị ảnh hưởng.</p>
+</div>
+</div>
+<div class="flex items-start gap-6 relative z-10">
+<div class="w-12 h-12 rounded-full bg-surface-container border border-primary-container flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(25,211,174,0.2)]">
+<span class="material-symbols-outlined text-primary-container">analytics</span>
+</div>
+<div class="pt-2">
+<h4 class="font-body-lg text-primary-container">2. Phân tích dữ liệu</h4>
+<p class="font-label-sm text-on-surface-variant mt-1">Mạng lưới thần kinh xử lý các mẫu hình ảnh cấp độ tế bào.</p>
+</div>
+</div>
+<div class="flex items-start gap-6 relative z-10">
+<div class="w-12 h-12 rounded-full bg-surface-container border border-outline-variant flex items-center justify-center shrink-0 shadow-lg">
+<span class="material-symbols-outlined text-on-surface">healing</span>
+</div>
+<div class="pt-2">
+<h4 class="font-body-lg text-on-surface">3. Phác đồ chăm sóc</h4>
+<p class="font-label-sm text-on-surface-variant mt-1">Nhận các bước điều trị mang tính hành động, dựa trên cơ sở khoa học.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center pt-3 pb-safe px-4 bg-surface/90 backdrop-blur-xl rounded-t-xl border-t border-outline-variant shadow-2xl">
+<a class="flex flex-col items-center justify-center text-primary font-bold active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_5}}">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home_max</span>
+<span class="font-label-sm text-label-sm mt-1">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_3}}">
+<span class="material-symbols-outlined">database</span>
+<span class="font-label-sm text-label-sm mt-1">Thư viện</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_2}}">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-sm text-label-sm mt-1">Lịch sử</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_4}}">
+<span class="material-symbols-outlined">potted_plant</span>
+<span class="font-label-sm text-label-sm mt-1">Chăm sóc</span>
+</a>
+</nav>
+<style>
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 16px);
+        }
+    </style>
+</body></html>

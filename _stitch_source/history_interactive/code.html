@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LEAF_AI - Lịch sử chẩn đoán</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#6cfad4",
+                    "surface-container": "#1c201f",
+                    "on-surface": "#e0e3e0",
+                    "outline-variant": "#3b4a45",
+                    "inverse-surface": "#e0e3e0",
+                    "on-primary-fixed-variant": "#005141",
+                    "surface-tint": "#32deb9",
+                    "surface-variant": "#323634",
+                    "on-primary": "#00382c",
+                    "on-secondary-fixed": "#002018",
+                    "tertiary-fixed-dim": "#c0c8c5",
+                    "tertiary": "#d0d9d5",
+                    "on-tertiary": "#2a3230",
+                    "tertiary-container": "#b4bdba",
+                    "surface-container-high": "#272b29",
+                    "primary-container": "#19d3ae",
+                    "on-secondary-container": "#004234",
+                    "on-tertiary-fixed-variant": "#404946",
+                    "surface-container-low": "#181c1b",
+                    "error": "#ffb4ab",
+                    "tertiary-fixed": "#dce4e1",
+                    "primary": "#4cf0c9",
+                    "on-error": "#690005",
+                    "inverse-on-surface": "#2d3130",
+                    "on-error-container": "#ffdad6",
+                    "primary-fixed-dim": "#32deb9",
+                    "surface-container-lowest": "#0b0f0e",
+                    "secondary": "#4addb9",
+                    "surface-bright": "#363a38",
+                    "on-surface-variant": "#bacac3",
+                    "surface": "#101413",
+                    "inverse-primary": "#006b57",
+                    "background": "#101413",
+                    "error-container": "#93000a",
+                    "outline": "#85948e",
+                    "surface-container-highest": "#323634",
+                    "on-background": "#e0e3e0",
+                    "surface-dim": "#101413",
+                    "on-secondary": "#00382c",
+                    "on-secondary-fixed-variant": "#005140",
+                    "primary-fixed": "#5bfbd4",
+                    "on-tertiary-fixed": "#151d1b",
+                    "on-primary-fixed": "#002019",
+                    "on-primary-container": "#005645",
+                    "secondary-container": "#00b896",
+                    "secondary-fixed-dim": "#4addb9",
+                    "on-tertiary-container": "#444d4a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "container-padding-mobile": "20px",
+                    "container-padding-desktop": "40px",
+                    "unit": "8px",
+                    "section-gap": "80px"
+            },
+            "fontFamily": {
+                    "body-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "display-lg-mobile": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "display-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label-sm": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "headline-md": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-md": [
+                            "Plus Jakarta Sans"
+                    ]
+            },
+            "fontSize": {
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "display-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "1.0",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "500"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .glass-panel {
+            background: rgba(13, 21, 19, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .glow-border:focus-within {
+            border-color: theme('colors.primary');
+            box-shadow: 0 0 0 1px theme('colors.primary');
+        }
+        
+        /* Hide scrollbar for clean UI */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+        
+        /* Safe area padding for bottom nav */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style id="custom-cursor" type="text/css">body button, body [type='button'], body input[type='reset'], body input[type='submit'], body [role="button"], ::-webkit-search-cancel-button, ::-webkit-search-decoration, ::-webkit-scrollbar-button, ::-webkit-file-upload-button, [role^=button], .cc_pointer, [type="search"]::-webkit-search-cancel-button, a, select, [type="search"]::-webkit-search-decoration, .paper-button, .ytp-progress-bar-container, input[type=submit], :link, :visited, a > *, img,  ::-webkit-scrollbar-button, .ogdlpmhglpejoiomcodnpjnfgcpmgale_pointer, ::-webkit-file-upload-button, .ytp-volume-panel, #myogdlpmhglpejoiomcodnpjnfgcpmgale .icon, body .custom-cursor-on-hover {cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAHJElEQVR4AbxXCWxU5xH+/reX97DX2F7ApiYOFNJGmDhto0BICkht1apSG4mqtFGpipJQqVGaQCSSCNLdDUIKIIUqtksVtVAhFVCpqjSqWpUAsXqlSQpeO2Ydb4xPsL334b133/s7s+vdYmSaQOU+vfmPmflnvn9m3nit7Dk9MOh+c/i9I38e6X72tHfHD0541+D/+CjBWGJ2IpJ54Gog/aN6q+Hk+hVmX9eF8dDuUx8c37j7VfNiY1Fy6fhldlJQJSYjWVyZSmIsnG58aG3TztYV9+5n2WKSkpj+qFdq6jwf0XQRhaKETifXVgQSTr1sd66SHQfWSOwyVPj/66xks5lLqejMPDv1Zj0GxoNaLDDxa7ne+Sn5Oefr2GoKocVyFQ6DDxtbI7LD+br8vKtp3sE72ChIpgfiM1dzUtOqx2cCAUxGM8VvF1rug4J+tFqfhF3YYSwAFtJbabZhVd2TEMplue7A6urBO1goPb9yZ/OZ2U7/8HtIRaYQmfSqwZHea9lEyPjOZ1e6PGtaliCXAbJ5oECpyhGIeArIE+9uWytM6hvyXqfxDnyXjig8XvRfeiGbiDwRHO19Neof+ZK9tX2DHB+ORsOTOPbVDfC0LGe1+VQkMGkC4jCvgxHfZyEDkfe5t8v7XSdlh+ttonNEh2T7y+0sX4hKAHD2rHqh6/lfXuh84bmerhd7fvOLv6hHevz2muEhxKLXcWwTgXAQCCrMeUZUSoeJSIjvyo6XN8EkPoBNnsFS/Q6srNmCVbYvY4V1L2rQJ+93/pwBzjtPmzIAWsx7Dfhim8mkHB5IouajDxGPTePY5gdxJS6gRejm8gbtPKVGLzZCp11EI9aiVgCCdPI5gCOko5R9xi5QZ/ohDDhFR0kB1WdhAEJZDYcRy2uBV/oTMA15kfNPoCYcRy5OhrNkpmKCl2ZpJudG6OfZRunJE4BIArjLRgWs34b1ru0l/tywMADACJsBIHvNFuDAO0E8c/wt1GVyMJqMJT7MJsBhBxQBWIh4Bj16HVBrARoIvd0K6MgFpyqZBpppr+Ap0qq+JK2ub1wUoSNDzDEItDpMaK+zo6m5Cbpa4psEUEdOjAagsQ6w1pSdMqBlS8oyBmgzA456QCE3mTxgN9BaPHhjIyMJe7mJJKZAtQUhSgJhFNAvM0AsJXXOsdUE8E1ZyiDqbagCYt6NxBFggJJypRGZFAM6OBRlJaU83TRK+T5ihNhkuElAW76Z3UaLuZcNp7NAdBaYpd7ATuZE1Uk/54YvpNHVkhFSLEvnJOVNZRT9rgFEc0PgfFeYPHPYObeVfDMvliTnRGkqzgT1hWAM4B7BsgpxA+NgUgCQVz8Uw52kXBYuCKAkKuIokirAISwxaOCc0lR9cxQldkx/SZEi6xkidsYgmM/R4a8gRRHiVEXJr8QfqudpcWsABe0EAhkfLFRgpFgCwiHkdYXYiSahBTXEJ+JITCQgZ6l4iAdOyVQYCMYBBmI0AlN0oKjvqhzn+ZYAhNedR157GgkyyAXHnxIb4lMV4ttSEJLxJALUA05882F4lzQCHJGKDs8GPTBNty9IpxjYP8msCt0SACuIPvc5isIZ1NDnxIwkhZLnCmkETkdZok/2fJsZ77bVofvRRzDocFQ0ynOUUpMsnESf83CZ8Z/xvwIoqSl4GlMZf6m5cJFl6MolwdxAfcKyzIqvRATkUD9iqTC6tj6EkQbqB3lyHCZKFo7AI3cKgDZz5+amjwUgLrlCSKs7EKbS5iLktsr5naXOxmkhQ4J6w+p6PV7xJKANehAlEEc3PwyfuXEGOfEN4XHvFXBTuEj5pvdjAbC+8DjfQji/D0m6ALdXqiUkCAALK0TN6i4BHHw3WgIRzkRw+FubzU88t81fUVlo/kQA+KDocx6CP9OFuFpurxwNAzUqzsgsAQvJNNL4fVsBjzVZ6taFxweupeNBOzTt3LNnvH90v+kbPfynkdy+3/mOb3G+TVXJVoFPDKCk3uv6MaYzr2E06cN4tgfX8scR0XYjhU3IyCXC43pUf+Xg6e6ju65YGpZvKeTS1657/2oPBPxfm4jk2nz+lNFu1u/c9siq7pI9Gm4LgKAiEn2uZ8Tf9t0j3v/JVtHrelx43D8VHtc/Sp8tGay8b7z0navWhuW/tTd/GsGRy8gmo6UKHPKnkFPVXZ3nxx5n3dsCwAduhzKxYKutoQVLV38BobF+5NP0u4AMDE6nqMsrnU+dGVy7qADigVGdpqmoqW1A8z0bkAiMocg/ZgnEWChjdpjkS4sKoJBOHQiNemKaWoTOYEJT23qohRwMijauFgpjvtHR4KICuNi99/JsePqBGd8/e3OpON0bMFnrMTb0r+8d2r7u7lN7vr5nUQGwx56fvTg8PjKzYWbo7wdDo/15+icI+VS0lmVMiw6AnXjPuvPnX3t+fyo6uSZy3ffYhDp+kflM/wYAAP//br0/+QAAAAZJREFUAwA6ivZOFtTHUQAAAABJRU5ErkJggg==") 1 1, pointer !important;} html,body,body select,body .custom-cursor-default-hover {cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADWklEQVR4AbzXbUgTYRwA8Gc3zWYvW1mWSW+YRpJBHzKVPhj2IYr6Zm/0wQwj6kOpZUr2wSCIAgOnCFGICKYtRESQIk2ESARfsjV17tyc59zdbi83d3d7vWvPTEmjmnNPB//jnhf+/x/Pc3fcYcUtak1Vh27g+fupupLW8asFDZpU8B8PzGqf54w2/hhOcbfkMmnTkWSZVtk9Td9t/vY6u7hahtqCuTlmCBbxBURgtLnBd5MLTFu5hJzUbYV7ktPL4RjKwBhyakgUAstq2Dk/8AsiEEUhfdkAggbmZdlh1m5ellohiwFqg0Vw2oimZQMIGpibMo0yJO4RBWEp/RxFghk779+ZliMudSK6wL6oXvBedr6e1A0A1mYC1hlNgJ4aIdxOeh0mEd8VNKjPIaodSovBcw81eI9n6CKLfrjaQRpPyXdnZDlJvc5FE8gRIQBQqQI9dRWvupXlpb2193tVJXmzm5PTc5k5XMdaZ5EiFgBwGVbEAuJQrsOk+4kQWgsb1SdXTFtz848AmBkiYrck5tqIsSDCJJMIQme0EX8FQERn5YXZuITkEMJlM8VHG/FPAGpEWACUiLABqBCrAiwiFDtS8hwmLRGNe2LVAIhQlZ83KnYcCD6ia0dEBICI1rIz+CKCdZARPx0RA35F2GfHCY6hIkKsCbCESEyB74kQIvgR0X69UZ0Jx8KJNQNgEbgdMvn2XOu0muAd5GYgCB/CRUQFABHtjy7h8Vt3hhDB7ZCHi4gaIFJEVAG/IyyhlbjzZqyrqkOrf9aFex62Tb7Mz38rhXNhRB0Aky5uh8/LEYSmT07T5GmjzbNPS3Lr5PHSohM3jtfCeTCQAGBiiNiwJalNkZQKKHwYuF12AD8wJ8ws8IvCTWW3/hqchwwAk/NOy+6NW3eBxJSjgDaMAi/vhN1gLPjvsT42pvZ2y1gaUoDTjEuF4D/H+k0JIOlgFnCSBuD38qGVMNBc/PY4sRIpwOOaf0zrRxxCwA+ksXEgYW8GCPg8IBYTpgM+n0E7pbcgBXyqrxhkGCrTrO0f9rAMkEgkIG6DAsxMDF55evHw/ubSs6VYaFMQnvpqyiYnOU22eeLzE9rw1ceYccA7qJjFksgBsJBOqfR8rHlQydqIA/aZ8ctmiu+H/TB+AAAA//8qZrGSAAAABklEQVQDAEvdEUkj/8gVAAAAAElFTkSuQmCC") 1 1, auto !important;}</style></head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md relative overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="sticky top-gutter mx-gutter rounded-full z-50 bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-xl border border-white/5 shadow-xl flex justify-between items-center px-6 py-3 mt-4 md:hidden">
+<div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary dark:text-primary">psychology_alt</span>
+<span class="font-display-lg-mobile text-primary tracking-tighter">LEAF_AI</span>
+</div>
+<button class="bg-primary-container text-on-primary-container font-label-sm text-label-sm px-4 py-2 rounded-full hover:opacity-80 transition-opacity active:scale-95 duration-200" onclick="window.location.href='{{DATA:SCREEN:SCREEN_4}}'">
+            Chẩn đoán
+        </button>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow px-container-padding-mobile md:px-container-padding-desktop pb-28 pt-8 flex flex-col gap-6 md:hidden">
+<!-- Header & Controls -->
+<div class="flex flex-col gap-4">
+<h1 class="font-display-lg-mobile text-display-lg-mobile" style="color: rgb(0, 0, 0);">Lịch sử chẩn đoán</h1>
+<div class="flex gap-3 mt-2">
+<!-- Search -->
+<div class="flex-grow flex items-center glass-panel rounded-lg px-4 py-3 glow-border transition-all">
+<span class="material-symbols-outlined text-on-surface-variant mr-3">search</span>
+<input class="bg-transparent border-none p-0 text-on-surface focus:ring-0 w-full font-body-md text-body-md placeholder-on-surface-variant/50" placeholder="Tìm kiếm cây, vấn đề..." type="text"/>
+</div>
+<!-- Filter -->
+<button class="glass-panel rounded-lg p-3 flex items-center justify-center text-on-surface hover:text-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+<!-- Quick Filters (Chips) -->
+<div class="flex gap-2 overflow-x-auto pb-2 -mx-container-padding-mobile px-container-padding-mobile snap-x">
+<button class="snap-start whitespace-nowrap bg-primary-container/10 border border-primary/30 text-primary font-label-sm text-label-sm px-4 py-1.5 rounded-full">Tất cả hồ sơ</button>
+<button class="snap-start whitespace-nowrap glass-panel text-on-surface-variant font-label-sm text-label-sm px-4 py-1.5 rounded-full hover:text-on-surface transition-colors">Nghiêm trọng</button>
+<button class="snap-start whitespace-nowrap glass-panel text-on-surface-variant font-label-sm text-label-sm px-4 py-1.5 rounded-full hover:text-on-surface transition-colors">Khỏe mạnh</button>
+<button class="snap-start whitespace-nowrap glass-panel text-on-surface-variant font-label-sm text-label-sm px-4 py-1.5 rounded-full hover:text-on-surface transition-colors">7 ngày qua</button>
+</div>
+</div>
+<!-- History List (Bento-style layout for mobile) -->
+<div class="flex flex-col gap-4 mt-2">
+<!-- Item 1: Critical -->
+<div class="glass-panel rounded-xl p-4 flex gap-4 items-center relative overflow-hidden group active:scale-[0.98] transition-transform cursor-pointer">
+<!-- Accent Glow -->
+<div class="absolute top-0 left-0 w-1 h-full bg-error opacity-80"></div>
+<!-- Thumbnail -->
+<div class="w-16 h-16 rounded-lg bg-surface-container-high shrink-0 overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A close-up macro photograph of a Monstera Deliciosa leaf showing severe brown necrotic spots with yellow halos, indicative of a fungal infection or nutrient burn. The lighting is clinical, high-contrast, and focused directly on the damaged tissue against a deep, dark minimalist background, emphasizing a high-tech agricultural analysis aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQpXJhNMLs-_j_frtcRKU4fv8OqeD2OY6C-v-nLY4gN7DvdhqIQDq4mqEGGf3oYamdoPb7v1C1ZpylZir18kMs0h1aQO1Biwn9I3uLVMkcWc3p-hd0HwT4kltLj8_aKPdsqI7GyQ-1IiduaTOntxHsbf6BNFFr4NF-130vYOpiIo8d1Cd7BRU9zl1z2DoSaZpmO40gZNQiqjzNo2F7DSl4jsn4n-C3aTgU3GmpZJQEeLCevas13Nmb"/>
+</div>
+<!-- Details -->
+<div class="flex-grow flex flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline-md text-[18px] text-on-surface leading-tight">Trầu bà lá xẻ</h3>
+<span class="font-label-sm text-[10px] text-on-surface-variant">24 Thg 10</span>
+</div>
+<p class="font-body-md text-body-md text-error mb-2">Bệnh đốm lá</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[14px] text-primary">analytics</span>
+<span class="font-label-sm text-[11px] text-primary">94% Độ tin cậy</span>
+</div>
+<span class="font-label-sm text-[10px] text-error border border-error/30 bg-error/10 px-2 py-0.5 rounded-full">Nghiêm trọng</span>
+</div>
+</div>
+</div>
+<!-- Item 2: Warning -->
+<div class="glass-panel rounded-xl p-4 flex gap-4 items-center relative overflow-hidden group active:scale-[0.98] transition-transform cursor-pointer">
+<!-- Accent Glow -->
+<div class="absolute top-0 left-0 w-1 h-full bg-[#fbbc04] opacity-80"></div>
+<!-- Thumbnail -->
+<div class="w-16 h-16 rounded-lg bg-surface-container-high shrink-0 overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A detailed, sharp image of a Ficus Lyrata (Fiddle Leaf Fig) leaf showing mild yellowing along the edges and slight drooping. The aesthetic is clean, dark, and laboratory-like, with subtle cool lighting highlighting the texture of the leaf against a deep charcoal gray background, typical of a precision agricultural scan." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUxMvGDkMw7o-WhbLhN_Usw-K25alAe0C7GCdRY8m-wBnEMWkF0m_v0RK0LtDYdgUx9lVoAGlyMcxyO-ELrYtNjiPgoSgJ-BCblN1hcnEv8eT08wTLYDUbNgPvCi2-xH70qu3cT6XTdc9L9hWQAd4qcIBCh7Blheu3ToGGOvKZBexpMaXC5LeiSMuRsYn7EiRsqM02JgCBLMnKsIoJxhcDsUC2Zd_zqrZvSuLBTJQnacffbARYQSCv"/>
+</div>
+<!-- Details -->
+<div class="flex-grow flex flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline-md text-[18px] text-on-surface leading-tight">Bàng Singapore</h3>
+<span class="font-label-sm text-[10px] text-on-surface-variant">22 Thg 10</span>
+</div>
+<p class="font-body-md text-body-md text-[#fbbc04] mb-2">Thiếu hụt Nitơ</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[14px] text-primary">analytics</span>
+<span class="font-label-sm text-[11px] text-primary">88% Độ tin cậy</span>
+</div>
+<span class="font-label-sm text-[10px] text-[#fbbc04] border border-[#fbbc04]/30 bg-[#fbbc04]/10 px-2 py-0.5 rounded-full">Theo dõi</span>
+</div>
+</div>
+</div>
+<!-- Item 3: Healthy -->
+<div class="glass-panel rounded-xl p-4 flex gap-4 items-center relative overflow-hidden group active:scale-[0.98] transition-transform cursor-pointer">
+<!-- Accent Glow -->
+<div class="absolute top-0 left-0 w-1 h-full bg-primary opacity-80"></div>
+<!-- Thumbnail -->
+<div class="w-16 h-16 rounded-lg bg-surface-container-high shrink-0 overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A pristine, highly detailed macro shot of a vibrant, healthy Calathea Ornata leaf showing striking pink stripes on deep green foliage. The lighting is precise and dramatic, casting a subtle glow on the leaf against a completely black background, fitting a premium, scientific visual analysis interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7m-E_lR8I4BZIs7M_m8mJjnTZWEwPpY6oBTZqjJjsr95jOcAKcUs6Cx-78FW0Vt5MxURQ8zEgkH2YwUph3-2-rOa3nI9RWMj91uZtuCH1383v-y0iXhNItHeEKQ2z-xrZfgkZbNmE_lXKYYtl5n60E5qcu0B-edJZbiPvv3d1gQwl2d5Hs55_ZgDJzudC8RBj5bAYKItpuwJp-pQ8EUUmZQ-0AphaXf243zKMTYZWK00tKxBiiTVy"/>
+</div>
+<!-- Details -->
+<div class="flex-grow flex flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline-md text-[18px] text-on-surface leading-tight">Đuôi công</h3>
+<span class="font-label-sm text-[10px] text-on-surface-variant">18 Thg 10</span>
+</div>
+<p class="font-body-md text-body-md text-primary mb-2">Sức khỏe tối ưu</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[14px] text-primary">analytics</span>
+<span class="font-label-sm text-[11px] text-primary">99% Độ tin cậy</span>
+</div>
+<span class="font-label-sm text-[10px] text-primary border border-primary/30 bg-primary/10 px-2 py-0.5 rounded-full">Khỏe mạnh</span>
+</div>
+</div>
+</div>
+<!-- Item 4: Critical -->
+<div class="glass-panel rounded-xl p-4 flex gap-4 items-center relative overflow-hidden group active:scale-[0.98] transition-transform cursor-pointer custom-cursor-on-hover">
+<!-- Accent Glow -->
+<div class="absolute top-0 left-0 w-1 h-full bg-error opacity-80"></div>
+<!-- Thumbnail -->
+<div class="w-16 h-16 rounded-lg bg-surface-container-high shrink-0 overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A highly detailed close-up of a tomato plant leaf covered in fine white powdery mildew. The image is styled as a diagnostic scan, with sharp contrast and cool, bluish clinical lighting against a dark, minimalist backdrop, emphasizing the fungal infection for agricultural data analysis." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTLsMPFQffVYVaPSprS1dxs-jhBswbq6fB0FCZaNnTrADMvpXbOtJn4WN4P1PzGID1ZV3shISoWn19NPxdYGuoJKPhxLzg2fr76sO2rCf6XMEMWgwV0AGVc1-ZJIg-mQR1yDx9-ptUrUc08xRi_gvtbG46V_1GFYnkYHfsVLup--bEX7mBKEuYHek-fcROzPlVENmcdgLw7p-hUGE_HATGe5ykE5GypiIP_wBdWyWBYKl97lW0HmgM"/>
+</div>
+<!-- Details -->
+<div class="flex-grow flex flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline-md text-[18px] text-on-surface leading-tight">Cà chua</h3>
+<span class="font-label-sm text-[10px] text-on-surface-variant">15 Thg 10</span>
+</div>
+<p class="font-body-md text-body-md text-error mb-2">Bệnh phấn trắng</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[14px] text-primary">analytics</span>
+<span class="font-label-sm text-[11px] text-primary">97% Độ tin cậy</span>
+</div>
+<span class="font-label-sm text-[10px] text-error border border-error/30 bg-error/10 px-2 py-0.5 rounded-full">Nghiêm trọng</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State (Hidden by default, structure provided for demonstration) -->
+<div class="hidden flex-col items-center justify-center text-center py-20 px-6 glass-panel rounded-xl mt-8">
+<div class="w-24 h-24 rounded-full bg-surface-container-high flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant">history_toggle_off</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Không có lịch sử chẩn đoán</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 max-w-xs">Bạn chưa quét bất kỳ cây nào. Bắt đầu chẩn đoán để xây dựng lịch sử nông nghiệp thông minh của bạn.</p>
+<button class="bg-primary text-on-primary font-body-lg text-body-lg px-6 py-3 rounded-lg hover:opacity-90 transition-opacity active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined">add_a_photo</span>
+                Chẩn đoán mới
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center pt-3 pb-safe px-4 bg-surface/90 dark:bg-surface/90 backdrop-blur-xl border-t border-outline-variant shadow-2xl md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_5}}">
+<span class="material-symbols-outlined" data-icon="home_max">home_max</span>
+<span class="font-label-sm text-label-sm mt-1">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_3}}">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+<span class="font-label-sm text-label-sm mt-1">Thư viện</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_2}}">
+<span class="material-symbols-outlined" data-icon="history" data-weight="fill">history</span>
+<span class="font-label-sm text-label-sm mt-1">Lịch sử</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed active:scale-90 transition-transform" href="{{DATA:SCREEN:SCREEN_4}}">
+<span class="material-symbols-outlined" data-icon="potted_plant">potted_plant</span>
+<span class="font-label-sm text-label-sm mt-1">Chăm sóc</span>
+</a>
+</nav>
+</body></html>

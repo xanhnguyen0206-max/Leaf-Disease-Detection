@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #101413;
+  color: #e0e3e0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism panel */
+.glass-panel {
+  background: rgba(13, 21, 19, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.emerald-glow {
+  box-shadow: 0 0 20px rgba(25, 211, 174, 0.15);
+}
+
+/* Scanner Animation */
+@keyframes scan-line {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.scanner-line {
+  animation: scan-line 2.5s linear infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; filter: drop-shadow(0 0 5px #19d3ae); }
+  50% { opacity: 1; filter: drop-shadow(0 0 15px #19d3ae); }
+}
+
+.glow-pulse {
+  animation: pulse-glow 2s infinite ease-in-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #101413;
+}
+::-webkit-scrollbar-thumb {
+  background: #272b29;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #19d3ae;
+}
