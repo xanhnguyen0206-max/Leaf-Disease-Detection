@@ -1,0 +1,69 @@
+{
+  "model_name": "Tomato Disease Object Detection Baseline",
+  "architecture": "YOLOv8n",
+  "pretrained_checkpoint": "yolov8n.pt",
+  "framework": "Ultralytics YOLO (PyTorch)",
+  "task": "detect",
+  "training_date": "2026-08-25 16:17:32",
+  "input_resolution": [
+    320,
+    320
+  ],
+  "device_used": "cpu",
+  "training_duration_seconds": 1662.63,
+  "dataset_info": {
+    "name": "Roboflow tomato-nwcjv (Processed)",
+    "num_classes": 3,
+    "classes": [
+      "Tomato___Bacterial_spot",
+      "Tomato___Early_blight",
+      "Tomato___Late_blight"
+    ],
+    "train_images": 480,
+    "val_images": 60,
+    "test_images": 60,
+    "total_images": 600
+  },
+  "training_config": {
+    "epochs": 15,
+    "batch_size": 32,
+    "imgsz": 320,
+    "patience": 6,
+    "optimizer": "auto"
+  },
+  "validation_metrics": {
+    "precision": 0.7481561273015682,
+    "recall": 0.6518221103555978,
+    "mAP50": 0.7293208818356965,
+    "mAP50_95": 0.43120590280041554,
+    "fitness": 0.43120590280041554
+  },
+  "test_metrics": {
+    "precision": 0.69367840515403,
+    "recall": 0.6541358386846334,
+    "mAP50": 0.6967878354611216,
+    "mAP50_95": 0.4037484328887212,
+    "fitness": 0.4037484328887212
+  },
+  "per_class_metrics": {
+    "Tomato___Bacterial_spot": {
+      "precision": 0.644565582535428,
+      "recall": 0.6389446085598305,
+      "mAP50": 0.6881870356958941,
+      "mAP50_95": 0.3597747692151563
+    },
+    "Tomato___Early_blight": {
+      "precision": 0.7882911802578575,
+      "recall": 0.6649263221282159,
+      "mAP50": 0.7476318572794527,
+      "mAP50_95": 0.40453179442047726
+    },
+    "Tomato___Late_blight": {
+      "precision": 0.6481784526688041,
+      "recall": 0.6585365853658537,
+      "mAP50": 0.654544613408018,
+      "mAP50_95": 0.4469387350305298
+    }
+  },
+  "average_inference_speed_ms": 357.93
+}

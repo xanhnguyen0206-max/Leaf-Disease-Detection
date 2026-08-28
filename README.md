@@ -6,31 +6,83 @@ The visual design system is derived from Google Stitch prototypes, featuring a h
 
 ---
 
-## 1. Project Overview
+# Run LEAF_AI
 
-LEAF_AI allows farmers and agronomists to:
-- Upload or capture images of diseased plant leaves.
-- Perform real-time AI scanning and receive disease identification with confidence scoring.
-- Access tailored care recommendations and actionable treatment steps.
-- Maintain a diagnosis history to monitor crop health over time.
-- Search an agricultural disease library covering symptoms, causes, and severity metrics.
+## Backend
+
+```bash
+cd backend
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+## Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+## Open
+
+- **Web Application**: http://localhost:3000 *(or `http://localhost:3001` if port 3000 is occupied)*
+- **Interactive API Docs (Swagger)**: http://127.0.0.1:8000/docs
+
+---
+
+## 1. Model Configuration & Switching
+
+The default production model is **LEAF_AI Tomato Disease Detection V3** (`model/tomato_v3/best.pt`), trained at **640x640 resolution** with leaf-safe data augmentation and annotation normalization. It achieves **0.768 mAP@50** on unseen test data, **80.8% detection sensitivity** on tiny Bacterial Spot lesions, and maintains high background specificity.
+
+The previous **V2 model** (`model/tomato_v2/best.pt`) is preserved as a verified backup and can be activated at any time.
+
+### Default Production Model (V3)
+- **Default Path**: `model/tomato_v3/best.pt`
+- **Input Resolution**: `640x640`
+- **Metadata**: `model/tomato_v3/metadata.json`
+- **Classes**:
+  - `0`: `Tomato___Bacterial_spot` (Bệnh đốm vi khuẩn cà chua)
+  - `1`: `Tomato___Early_blight` (Bệnh úa sớm cà chua)
+  - `2`: `Tomato___Late_blight` (Bệnh sương mai cà chua)
+
+### How to Switch Models
+
+You can configure the active model via environment variables or `.env` file without modifying source code:
+
+```ini
+# Use V3 Model (Default Production):
+MODEL_TYPE=yolo
+MODEL_VERSION=v3
+MODEL_PATH=model/tomato_v3/best.pt
+MODEL_IMG_SIZE=640
+MODEL_CONFIDENCE_THRESHOLD=0.25
+MODEL_DEVICE=cpu
+
+# Or Switch to V2 Backup Model:
+MODEL_VERSION=v2
+MODEL_PATH=model/tomato_v2/best.pt
+MODEL_IMG_SIZE=384
+
+# Or Rollback / Test with Baseline Model:
+MODEL_PATH=model/tomato/best.pt
+```
+
+The baseline model at `model/tomato/best.pt` remains preserved for regression testing and benchmarking.
 
 ---
 
 ## 2. System Architecture
 
-The application is structured into decoupled, modular components:
-
 ```
-[ Frontend (React + TS) ] ──(HTTP/REST)──> [ Backend (FastAPI) ]
-                                                   │
-                                        ┌──────────┴──────────┐
-                                        ▼                     ▼
-                                [ SQLite Database ]   [ PredictionService ]
-                                                              │
-                                                      ┌───────┴───────┐
-                                                      ▼               ▼
-                                              [ Mock Service ] [ Future AI Model ]
+[ Frontend (React + TS + Vite) ] ──(HTTP/REST Proxy)──> [ Backend (FastAPI) ]
+                                                                │
+                                                    ┌───────────┴───────────┐
+                                                    ▼                       ▼
+                                            [ SQLite Database ]    [ PredictionService ]
+                                            (Curated Care Guides)           │
+                                                                    ┌───────┴───────┐
+                                                                    ▼               ▼
+                                                           [ YOLOModelService ] [ MockModelService ]
+                                                        (model/tomato_v2/best.pt) (Optional dev mock)
 ```
 
 ---
@@ -39,7 +91,6 @@ The application is structured into decoupled, modular components:
 
 ```
 Leaf-Disease-Detection/
-├── _stitch_source/                          # Preserved original Stitch HTML prototypes
 ├── frontend/                                # React + TypeScript + Vite + Tailwind CSS
 │   ├── src/
 │   │   ├── components/                      # Navbar, BottomNav, CanvasShader, ThreeLeaf, etc.
@@ -54,22 +105,32 @@ Leaf-Disease-Detection/
 │   │   ├── main.py                          # FastAPI entrypoint & router registration
 │   │   ├── api/endpoints/                   # Health, predict, history, diseases, care
 │   │   ├── database/                        # SQLAlchemy models, session setup & seed data
-│   │   ├── services/                        # Prediction & model service abstractions
+│   │   ├── services/                        # YOLO & Mock model services, PredictionService
+│   │   ├── core/                            # App settings & model configuration
 │   │   └── schemas/                         # Pydantic validation schemas
 │   ├── uploads/                             # Uploaded leaf images storage
 │   ├── tests/                               # Pytest automated test suite
 │   ├── requirements.txt
 │   └── pytest.ini
-├── model/                                   # Model artifacts directory (Separated)
-│   └── README.md                            # Documentation for model export & integration
-├── training/                                # Model training pipeline (Separated)
-│   ├── datasets/
-│   ├── notebooks/
-│   ├── scripts/
-│   ├── configs/
-│   └── README.md
-├── tests/                                   # General integration test docs
-├── docs/                                    # Architecture & API reference docs
+├── model/                                   # Trained model artifacts
+│   ├── tomato_v2/                           # DEFAULT V2 Model Checkpoint
+│   │   ├── best.pt                          # YOLOv8n weights checkpoint
+│   │   ├── classes.json                     # Class label mapping
+│   │   └── metadata.json                    # Model training & evaluation metrics
+│   └── tomato/                              # Preserved Baseline Model Checkpoint
+│       ├── best.pt
+│       ├── classes.json
+│       └── metadata.json
+├── training/                                # Model training pipeline & datasets
+│   ├── datasets/processed/tomato_v2/        # Processed V2 YOLO dataset (train/val/test)
+│   ├── datasets/raw/tomato_extra/           # Raw extra dataset
+│   ├── scripts/                             # Dataset preparation, training & evaluation scripts
+│   └── docs/                                # Detailed training & inspection reports
+├── docs/                                    # Technical documentation
+│   ├── tomato_v2_integration_report.md      # Full-stack integration report
+│   ├── model_integration.md                 # Complete YOLO model integration & API guide
+│   ├── architecture.md
+│   └── api.md
 ├── .env.example
 ├── .gitignore
 └── README.md                                # Master project documentation
@@ -82,16 +143,10 @@ Leaf-Disease-Detection/
 - **Node.js**: `v18.x` or higher
 - **Python**: `3.10` or higher
 - **npm**: `v9.x` or higher
-- **git**: for version control
 
 ---
 
 ## 5. Installation & Setup
-
-### Clone & Navigate
-```bash
-cd C:\Users\Admin\Leaf-Disease-Detection
-```
 
 ### Backend Installation
 ```bash
@@ -107,120 +162,29 @@ npm install
 
 ---
 
-## 6. Environment Variables
+## 6. Automated Testing
 
-Create a `.env` file in the root directory (or copy from `.env.example`):
-
-```ini
-PROJECT_NAME="LeafAI Platform API"
-VERSION="1.0.0"
-API_V1_STR="/api"
-PORT=8000
-HOST="0.0.0.0"
-VITE_API_BASE_URL="http://localhost:8000/api"
-```
-
----
-
-## 7. Running the Application
-
-Running the application requires two active terminal windows.
-
-### Terminal 1: Launch Backend (FastAPI)
+### Backend Pytest Suite
 ```bash
-cd C:\Users\Admin\Leaf-Disease-Detection\backend
-python app/main.py
+python -m pytest backend/tests -v
 ```
-*The FastAPI server starts at **http://localhost:8000**. Database seed data is initialized automatically.*
-*Interactive API docs available at **http://localhost:8000/docs**.*
 
-### Terminal 2: Launch Frontend (Vite)
+### Real Image API Integration Test
 ```bash
-cd C:\Users\Admin\Leaf-Disease-Detection\frontend
-npm run dev
+python training/scripts/test_v2_integration_api.py
 ```
-*The React application starts at **http://localhost:3000**.*
 
----
-
-## 8. Automated Testing
-
-### Running Backend Unit & API Tests
+### Frontend Production Build
 ```bash
-cd C:\Users\Admin\Leaf-Disease-Detection\backend
-pytest
+cd frontend
+npm run build
 ```
-*Runs Pytest covering health check, image prediction upload, disease library queries, care recommendations, and history deletion.*
 
 ---
 
-## 9. Step-by-Step Manual Test Flow
+## 7. Model Integration Details
 
-Follow this step-by-step verification flow:
-
-1. **Open Home Page**: Navigate to `http://localhost:3000`. Observe WebGL background shader, 3D rotating leaf wireframe mesh, and platform metrics.
-2. **Navigate to Diagnose**: Click "Chẩn đoán ngay" in the top navbar or primary hero CTA.
-3. **Upload Image**: Drag and drop a leaf image file or click to select a file (JPG, PNG, WEBP).
-4. **Preview Image**: Inspect the high-resolution leaf image preview canvas.
-5. **Start Analysis**: Click "Bắt đầu phân tích bệnh".
-6. **Scanner Animation**: Observe the interactive green scanner line animation and glowing status indicator.
-7. **View Prediction Card**: Inspect the SVG confidence ring (e.g. `95%`), plant classification (`Cà chua`), identified disease (`Bệnh úa sớm`), and care recommendations.
-8. **Check History**: Navigate to `Lịch sử` tab. Verify that the recent diagnosis record appears with timestamp and confidence score.
-9. **Delete History Record**: Click "Xóa bản ghi" to remove the item from history.
-10. **Open Disease Library**: Click `Thư viện` tab.
-11. **Search & Filter**: Type `cà chua` into the search input or click the `Khoai tây` filter chip.
-12. **View Disease Detail**: Click "Xem chi tiết bệnh" on any card to view detailed symptoms and care guidelines.
-
----
-
-## 10. API Reference
-
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/api/health` | Check API server operational status |
-| `POST` | `/api/predict` | Upload leaf image for AI diagnosis |
-| `GET` | `/api/history` | List all historical diagnoses |
-| `GET` | `/api/history/{id}` | Get single diagnosis record by UUID |
-| `DELETE` | `/api/history/{id}` | Delete diagnosis record by UUID |
-| `GET` | `/api/diseases` | List disease library (supports `search` & `plant` filters) |
-| `GET` | `/api/diseases/{id}` | Detailed disease info and symptoms |
-| `GET` | `/api/care/{disease_id}` | Treatment recommendations for a disease |
-
----
-
-## 11. Mock AI & Future Model Integration Guide
-
-Currently, `backend/app/services/model_service.py` uses `MockModelService` to simulate prediction results with realistic latency and confidence metrics.
-
-### To integrate your trained AI model:
-
-1. Train your model inside `training/` (e.g., using YOLOv8, PyTorch, or ResNet).
-2. Save trained model weights to `model/model.pt` and class index mapping to `model/classes.json`.
-3. In `backend/app/services/model_service.py`, replace `MockModelService` with your PyTorch inference loader:
-   ```python
-   import torch
-
-   class TrainedModelService:
-       def __init__(self):
-           self.model = torch.load("model/model.pt")
-           self.model.eval()
-
-       def predict(self, image_path: str):
-           # Load image, preprocess, run model inference
-           tensor = preprocess(image_path)
-           outputs = self.model(tensor)
-           ...
-           return {"plant": plant, "disease": disease, "confidence": conf, ...}
-   ```
-4. **No frontend code changes are needed** because the API contract (`POST /api/predict`) remains identical.
-
----
-
-## 12. Troubleshooting Guide
-
-- **Port Conflict (8000 or 3000 in use)**:
-  Change `PORT` in `backend/app/core/config.py` or `vite.config.ts`.
-- **CORS Error**:
-  Ensure `CORSMiddleware` in `backend/app/main.py` is enabled for `http://localhost:3000`.
-- **Backend Offline Warning in Frontend**:
-  The frontend automatically switches to client-side mock data if the FastAPI backend is not running, ensuring smooth demonstration fallback.
+For full technical specifications on YOLO model inference, bounding box structures, database recommendations, and model upgrade procedures, see:
+- [Model Integration Guide](file:///c:/Users/Admin/Leaf-Disease-Detection/docs/model_integration.md)
+- [Tomato V2 Training Report](file:///c:/Users/Admin/Leaf-Disease-Detection/training/docs/tomato_v2_training_report.md)
+- [Full-Stack Integration Report](file:///c:/Users/Admin/Leaf-Disease-Detection/docs/tomato_v2_integration_report.md)

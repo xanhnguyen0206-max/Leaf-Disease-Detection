@@ -27,17 +27,23 @@ export const App: React.FC = () => {
 
       <main className="flex-grow pt-4">
         {currentTab === 'home' && <HomePage onNavigate={setCurrentTab} />}
-        {currentTab === 'diagnose' && <DiagnosePage onNavigate={setCurrentTab} />}
+        {currentTab === 'diagnose' && (
+          <DiagnosePage
+            onNavigate={setCurrentTab}
+            onSelectDisease={handleSelectDisease}
+          />
+        )}
         {currentTab === 'diseases' && <DiseaseLibraryPage onSelectDisease={handleSelectDisease} />}
         {currentTab === 'disease-detail' && selectedDiseaseId && (
           <DiseaseDetailPage
             diseaseId={selectedDiseaseId}
             onBack={() => setCurrentTab('diseases')}
             onDiagnoseNow={() => setCurrentTab('diagnose')}
+            onNavigateCare={() => setCurrentTab('care')}
           />
         )}
         {currentTab === 'history' && <HistoryPage />}
-        {currentTab === 'care' && <CarePage />}
+        {currentTab === 'care' && <CarePage onDiagnoseNow={() => setCurrentTab('diagnose')} />}
         {currentTab === 'about' && <AboutPage />}
       </main>
 

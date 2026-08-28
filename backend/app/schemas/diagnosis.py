@@ -1,6 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from typing import List, Optional, Any
 from datetime import datetime
+from app.schemas.prediction import BoundingBox, DetectionItem, DetectedDiseaseGroup
 
 class RecommendationItem(BaseModel):
     title: str
@@ -18,6 +19,11 @@ class DiagnosisResult(BaseModel):
     image_url: Optional[str] = None
     heatmap_url: Optional[str] = None
     created_at: datetime
+    status: Optional[str] = "detected"
+    primary_disease: Optional[str] = None
+    detections: Optional[List[DetectionItem]] = []
+    detected_diseases: Optional[List[DetectedDiseaseGroup]] = []
+    is_multi_disease: Optional[bool] = False
 
 class DiagnosisHistoryResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -31,3 +37,9 @@ class DiagnosisHistoryResponse(BaseModel):
     image_url: Optional[str] = None
     heatmap_url: Optional[str] = None
     created_at: datetime
+    status: Optional[str] = "detected"
+    primary_disease: Optional[str] = None
+    detections: Optional[Any] = None
+    detected_diseases: Optional[Any] = None
+    is_multi_disease: Optional[bool] = False
+

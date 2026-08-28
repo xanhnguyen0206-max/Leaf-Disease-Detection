@@ -3,10 +3,23 @@ __pycache__/
 *.py[cod]
 *$py.class
 venv/
+.venv/
 .env
+.env.*
+!.env.example
 *.db
+backend/leafai.db
 uploads/*
 !uploads/.gitkeep
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/.pytest_cache/
+
+# Datasets & Training Runs (Local data & checkpoints preserved locally)
+training/datasets/
+**/datasets/
+training/runs/
+runs/
 
 # Node.js / Vite
 node_modules/

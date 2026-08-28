@@ -1,0 +1,60 @@
+{
+  "model_name": "LEAF_AI Tomato Disease Detection YOLOv8n V2",
+  "created_at": "2026-08-26T13:55:59.678461",
+  "architecture": "YOLOv8n",
+  "input_size": 384,
+  "classes": [
+    "Tomato___Bacterial_spot",
+    "Tomato___Early_blight",
+    "Tomato___Late_blight"
+  ],
+  "training_epochs": 25,
+  "batch_size": 32,
+  "dataset": "tomato_v2",
+  "metrics": {
+    "val": {
+      "precision": 0.7757290697245312,
+      "recall": 0.7496371267416877,
+      "mAP50": 0.800714266932632,
+      "mAP50_95": 0.4647093423458962
+    },
+    "test": {
+      "precision": 0.734131096641668,
+      "recall": 0.7014134862738248,
+      "mAP50": 0.7432612493095263,
+      "mAP50_95": 0.4197456878971419
+    },
+    "per_class_test": {
+      "Tomato___Bacterial_spot": {
+        "precision": 0.7138028152033646,
+        "recall": 0.6911392405063291,
+        "mAP50": 0.6995513249039855,
+        "mAP50_95": 0.36092155960470745
+      },
+      "Tomato___Early_blight": {
+        "precision": 0.6894927096064976,
+        "recall": 0.572463768115942,
+        "mAP50": 0.6397362912443159,
+        "mAP50_95": 0.3028341673431095
+      },
+      "Tomato___Late_blight": {
+        "precision": 0.7990977651151414,
+        "recall": 0.8406374501992032,
+        "mAP50": 0.8904961317802775,
+        "mAP50_95": 0.5954813367436087
+      }
+    }
+  },
+  "hard_negative_false_positive_rate": {
+    "v2_model": {
+      "fp_count": 0,
+      "total": 33,
+      "rate": 0.0
+    },
+    "baseline_model": {
+      "fp_count": 29,
+      "total": 33,
+      "rate": 0.8787878787878788
+    }
+  }
+}

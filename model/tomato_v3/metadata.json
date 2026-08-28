@@ -1,0 +1,155 @@
+{
+  "model_name": "LEAF_AI Tomato Disease Detection YOLOv8n V3 (640x640)",
+  "created_at": "2026-08-27T22:08:41.146204",
+  "architecture": "YOLOv8n",
+  "input_size": 640,
+  "classes": [
+    "Tomato___Bacterial_spot",
+    "Tomato___Early_blight",
+    "Tomato___Late_blight"
+  ],
+  "training_epochs": 25,
+  "batch_size": 16,
+  "dataset": "tomato_v3",
+  "training_duration_seconds": 1279.8436658382416,
+  "metrics": {
+    "val": {
+      "precision": 0.822825260580812,
+      "recall": 0.7392242646254469,
+      "mAP50": 0.8110720206163614,
+      "mAP50_95": 0.43764823203234315
+    },
+    "test": {
+      "precision": 0.7173400317572486,
+      "recall": 0.724584935498025,
+      "mAP50": 0.7676091959940546,
+      "mAP50_95": 0.39418147267720605
+    },
+    "per_class_test": {
+      "Tomato___Bacterial_spot": {
+        "precision": 0.723083066952169,
+        "recall": 0.7088607594936709,
+        "mAP50": 0.7192482341201724,
+        "mAP50_95": 0.3357656956321418
+      },
+      "Tomato___Early_blight": {
+        "precision": 0.6862469864007223,
+        "recall": 0.572463768115942,
+        "mAP50": 0.6797248092489766,
+        "mAP50_95": 0.3226322346634621
+      },
+      "Tomato___Late_blight": {
+        "precision": 0.7426900419188546,
+        "recall": 0.8924302788844621,
+        "mAP50": 0.9038545446130151,
+        "mAP50_95": 0.5241464877360141
+      }
+    }
+  },
+  "bacterial_spot_audit_v3": {
+    "total_gt_bs_boxes": 396,
+    "detected_bs_boxes": 320,
+    "missed_bs_boxes": 64,
+    "poor_loc_bs_boxes": 12,
+    "confused_eb_boxes": 0,
+    "confused_lb_boxes": 0,
+    "low_conf_proposals": 125,
+    "sub_thresh_proposals": 1520,
+    "mean_confidence": 0.5870937854982913,
+    "calculated_recall": 0.8080808080808081,
+    "size_breakdown": {
+      "very_small": {
+        "total": 317,
+        "detected": 250,
+        "rate": 0.7886435331230284
+      },
+      "small": {
+        "total": 48,
+        "detected": 45,
+        "rate": 0.9375
+      },
+      "medium": {
+        "total": 18,
+        "detected": 14,
+        "rate": 0.7777777777777778
+      },
+      "large": {
+        "total": 13,
+        "detected": 11,
+        "rate": 0.8461538461538461
+      }
+    }
+  },
+  "bacterial_spot_audit_v2": {
+    "total_gt_bs_boxes": 396,
+    "detected_bs_boxes": 305,
+    "missed_bs_boxes": 71,
+    "poor_loc_bs_boxes": 20,
+    "confused_eb_boxes": 0,
+    "confused_lb_boxes": 0,
+    "low_conf_proposals": 130,
+    "sub_thresh_proposals": 1662,
+    "mean_confidence": 0.5987797045316853,
+    "calculated_recall": 0.7702020202020202,
+    "size_breakdown": {
+      "very_small": {
+        "total": 317,
+        "detected": 239,
+        "rate": 0.7539432176656151
+      },
+      "small": {
+        "total": 48,
+        "detected": 41,
+        "rate": 0.8541666666666666
+      },
+      "medium": {
+        "total": 18,
+        "detected": 14,
+        "rate": 0.7777777777777778
+      },
+      "large": {
+        "total": 13,
+        "detected": 11,
+        "rate": 0.8461538461538461
+      }
+    }
+  },
+  "v2_test_metrics": {
+    "precision": 0.734131096641668,
+    "recall": 0.7014134862738248,
+    "mAP50": 0.7432612493095263,
+    "mAP50_95": 0.4197456878971419,
+    "per_class": {
+      "Tomato___Bacterial_spot": {
+        "precision": 0.7138028152033646,
+        "recall": 0.6911392405063291,
+        "mAP50": 0.6995513249039855,
+        "mAP50_95": 0.36092155960470745
+      },
+      "Tomato___Early_blight": {
+        "precision": 0.6894927096064976,
+        "recall": 0.572463768115942,
+        "mAP50": 0.6397362912443159,
+        "mAP50_95": 0.3028341673431095
+      },
+      "Tomato___Late_blight": {
+        "precision": 0.7990977651151414,
+        "recall": 0.8406374501992032,
+        "mAP50": 0.8904961317802775,
+        "mAP50_95": 0.5954813367436087
+      }
+    }
+  },
+  "hard_negative_false_positive_rate": {
+    "v3": {
+      "fp_count": 1,
+      "total": 33,
+      "rate": 0.030303030303030304
+    },
+    "v2": {
+      "fp_count": 0,
+      "total": 33,
+      "rate": 0.0
+    }
+  }
+}
