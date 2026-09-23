@@ -71,7 +71,62 @@ The baseline models remain preserved for regression testing and benchmarking.
 
 ---
 
-## 2. System Architecture
+## 2. Tomato V4 Dataset & Reproducibility
+
+GitHub contains the source code, training scripts, configs, and the final production model for Tomato V4. However, the heavy raw and processed image datasets are deliberately stored outside of GitHub on Google Drive.
+
+### Repository vs Dataset Storage
+| Storage | Purpose |
+|---------|---------|
+| **GitHub** | Source code, model weights (`best.pt`), training scripts, configs, documentation |
+| **Google Drive** | Large Tomato datasets (Raw & Processed images/labels) |
+
+**Google Drive Link:** [LEAF_AI Tomato V4 Datasets](https://drive.google.com/drive/folders/1sOvX_ULlLlyowvvkS2DAyyPxgxEs2_r9?usp=drive_link)
+
+To retrain or reproduce the V4 model from scratch, you must download the dataset and place it in the correct location relative to your project root (`PROJECT_ROOT`). The direct dataset used for training V4 is the `processed/tomato_v4` dataset. (The `raw` datasets are also backed up on Drive if you wish to rebuild the processed dataset from scratch).
+
+### Expected Dataset Structure
+Download the processed dataset and extract it so that it resides precisely at `training/datasets/processed/tomato_v4/`.
+
+The expected structure inside your project should look like this:
+```text
+Leaf-Disease-Detection/ (PROJECT_ROOT)
+└── training/
+    └── datasets/
+        └── processed/
+            └── tomato_v4/
+                ├── data.yaml
+                ├── images/
+                │   ├── train/
+                │   ├── val/
+                │   └── test/
+                ├── labels/
+                │   ├── train/
+                │   ├── val/
+                │   └── test/
+                └── samples/
+```
+
+### Tomato V4 Reproducibility Checklist
+
+Follow these exact steps to reproduce the training environment and retrain the model:
+
+- [ ] **Clone repository**: Clone this GitHub repository to your local machine.
+- [ ] **Download dataset**: Download the `processed/tomato_v4` dataset from the Google Drive link above.
+- [ ] **Restore dataset into project**: Extract the dataset and place it exactly at `training/datasets/processed/tomato_v4/` relative to your `PROJECT_ROOT`. Do not use absolute paths (e.g. `C:\Users\Admin\...`).
+- [ ] **Verify `data.yaml`**: Ensure `training/datasets/processed/tomato_v4/data.yaml` exists and correctly maps the 6 classes.
+- [ ] **Verify training script**: The training script is located at `training/scripts/train_tomato_v4.py`.
+- [ ] **Run training**: Execute the training script from the project root:
+      ```bash
+      python training/scripts/train_tomato_v4.py
+      ```
+- [ ] **Verify generated model**: The newly trained model will typically be outputted in the `runs/` directory (e.g., `runs/detect/train/weights/best.pt`). You can overwrite the production model at `model/tomato_v4/best.pt` with this new weight file.
+- [ ] **Run backend/frontend**: Start the backend and frontend servers as instructed in the Run section.
+- [ ] **Test prediction**: Test the new model using the Diagnose page or the API.
+
+---
+
+## 3. System Architecture
 
 ```
 [ Frontend (React + TS + Vite) ] ──(HTTP/REST Proxy)──> [ Backend (FastAPI) ]
@@ -88,7 +143,7 @@ The baseline models remain preserved for regression testing and benchmarking.
 
 ---
 
-## 3. Folder Structure
+## 4. Folder Structure
 
 ```
 Leaf-Disease-Detection/
@@ -139,7 +194,7 @@ Leaf-Disease-Detection/
 
 ---
 
-## 4. Software Requirements
+## 5. Software Requirements
 
 - **Node.js**: `v18.x` or higher
 - **Python**: `3.10` or higher
@@ -147,7 +202,7 @@ Leaf-Disease-Detection/
 
 ---
 
-## 5. Installation & Setup
+## 6. Installation & Setup
 
 ### Backend Installation
 ```bash
@@ -163,7 +218,7 @@ npm install
 
 ---
 
-## 6. Automated Testing
+## 7. Automated Testing
 
 ### Backend Pytest Suite
 ```bash
@@ -183,7 +238,7 @@ npm run build
 
 ---
 
-## 7. Model Integration Details
+## 8. Model Integration Details
 
 For full technical specifications on YOLO model inference, bounding box structures, database recommendations, and model upgrade procedures, see:
 - [Model Integration Guide](file:///c:/Users/Admin/Leaf-Disease-Detection/docs/model_integration.md)
