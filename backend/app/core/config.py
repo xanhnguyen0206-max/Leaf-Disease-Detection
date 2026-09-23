@@ -13,14 +13,22 @@ class Settings(BaseSettings):
 
     # Model Configuration
     MODEL_TYPE: str = os.environ.get("MODEL_TYPE", "yolo")  # Options: 'yolo', 'mock'
-    MODEL_VERSION: str = os.environ.get("MODEL_VERSION", "v3").lower()  # Options: 'v3', 'v2'
+    MODEL_VERSION: str = os.environ.get("MODEL_VERSION", "v4").lower()  # Options: 'v4', 'v3', 'v2'
     
-    # Path resolution: explicit MODEL_PATH > MODEL_VERSION (v2 or v3 default)
+    # AI Fallback Configuration
+    AI_FALLBACK_ENABLED: bool = os.environ.get("AI_FALLBACK_ENABLED", "false").lower() == "true"
+    AI_FALLBACK_PROVIDER: str = os.environ.get("AI_FALLBACK_PROVIDER", "mock")
+    XAI_API_KEY: str = os.environ.get("XAI_API_KEY", "")
+    YOLO_HIGH_CONFIDENCE: float = float(os.environ.get("YOLO_HIGH_CONFIDENCE", "0.70"))
+    YOLO_LOW_CONFIDENCE: float = float(os.environ.get("YOLO_LOW_CONFIDENCE", "0.40"))
+    AI_FALLBACK_TIMEOUT: int = int(os.environ.get("AI_FALLBACK_TIMEOUT", "15"))
+    
+    # Path resolution: explicit MODEL_PATH > MODEL_VERSION
     _DEFAULT_MODEL_PATH: str = os.path.join(
-        PROJECT_ROOT, "model", "tomato_v2" if os.environ.get("MODEL_VERSION", "v3").lower() == "v2" else "tomato_v3", "best.pt"
+        PROJECT_ROOT, "model", f"tomato_{os.environ.get('MODEL_VERSION', 'v4').lower()}", "best.pt"
     )
     MODEL_PATH: str = os.environ.get("MODEL_PATH", _DEFAULT_MODEL_PATH)
-    MODEL_IMG_SIZE: int = int(os.environ.get("MODEL_IMG_SIZE", "640" if os.environ.get("MODEL_VERSION", "v3").lower() == "v3" else "384"))
+    MODEL_IMG_SIZE: int = int(os.environ.get("MODEL_IMG_SIZE", "640"))
     MODEL_CONFIDENCE_THRESHOLD: float = float(os.environ.get("MODEL_CONFIDENCE_THRESHOLD", "0.25"))
     MODEL_DEVICE: str = os.environ.get("MODEL_DEVICE", "cpu")
 

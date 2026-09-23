@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.database.seed import seed_database
-from app.api.endpoints import health, predict, history, diseases, care
+from app.api.endpoints import health, predict, history, diseases, care, treatment_plans
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -35,6 +35,7 @@ app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads"
 
 # Include Routers
 app.include_router(health.router, prefix=settings.API_V1_STR, tags=["Health"])
+app.include_router(treatment_plans.router, prefix=settings.API_V1_STR, tags=["Treatment Plans"])
 app.include_router(predict.router, prefix=settings.API_V1_STR, tags=["Prediction"])
 app.include_router(history.router, prefix=settings.API_V1_STR, tags=["History"])
 app.include_router(diseases.router, prefix=settings.API_V1_STR, tags=["Diseases"])

@@ -1,0 +1,12 @@
+path: C:/Users/Admin/Leaf-Disease-Detection/training/datasets/processed/tomato_v4
+train: images/train
+val: images/val
+test: images/test
+nc: 6
+names:
+  0: Tomato___Bacterial_spot
+  1: Tomato___Early_blight
+  2: Tomato___Late_blight
+  3: Tomato___Septoria_leaf_spot
+  4: Tomato___Leaf_mold
+  5: Tomato___Powdery_mildew

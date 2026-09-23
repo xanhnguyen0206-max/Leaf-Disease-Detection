@@ -36,6 +36,27 @@ const DISEASE_COLOR_PALETTES: Record<string, {
     text: 'text-purple-400',
     hex: '#a855f7',
   },
+  Tomato___Septoria_leaf_spot: {
+    border: 'border-emerald-500',
+    bg: 'bg-emerald-500/20',
+    badge: 'bg-emerald-600 border-emerald-400',
+    text: 'text-emerald-400',
+    hex: '#10b981',
+  },
+  Tomato___Leaf_mold: {
+    border: 'border-yellow-500',
+    bg: 'bg-yellow-500/20',
+    badge: 'bg-yellow-600 border-yellow-400',
+    text: 'text-yellow-400',
+    hex: '#eab308',
+  },
+  Tomato___Powdery_mildew: {
+    border: 'border-slate-400',
+    bg: 'bg-slate-400/20',
+    badge: 'bg-slate-500 border-slate-300',
+    text: 'text-slate-300',
+    hex: '#94a3b8',
+  },
 };
 
 const DEFAULT_PALETTE = {
@@ -518,6 +539,22 @@ export const DiagnosePage: React.FC<DiagnosePageProps> = ({ onNavigate, onSelect
             <p className="text-amber-200/90 leading-relaxed">
               Mô hình phát hiện dấu hiệu của nhiều tác nhân gây bệnh trên cùng một mẫu lá. 
               Kết quả dưới đây được phân loại thành <strong>Bệnh chẩn đoán chính</strong> và <strong>Các bệnh được phát hiện thêm</strong> theo mức độ bằng chứng và độ tin cậy.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* AI Fallback Status Banner */}
+      {result && result.fallback_used && (
+        <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 flex items-start gap-3 shadow-lg mb-4">
+          <span className="material-symbols-outlined text-xl mt-0.5 text-indigo-400 shrink-0">psychology</span>
+          <div className="flex flex-col gap-1 text-xs md:text-sm">
+            <strong className="font-bold text-indigo-400 text-sm">
+              AI Hỗ trợ xác minh (Second Opinion)
+            </strong>
+            <p className="text-indigo-200/90 leading-relaxed">
+              Mô hình YOLO có độ tin cậy thấp nên hệ thống đã tự động kích hoạt AI để hỗ trợ xác minh. 
+              Kết quả dưới đây có sự đóng góp của đánh giá độc lập từ AI.
             </p>
           </div>
         </div>

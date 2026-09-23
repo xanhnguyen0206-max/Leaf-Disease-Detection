@@ -47,6 +47,65 @@ export interface DiagnosisResult {
   detections?: DetectionItem[];
   detected_diseases?: DetectedDiseaseGroup[];
   is_multi_disease?: boolean;
+  treatment_plan_summary?: {
+    completed: number;
+    total: number;
+    percentage: number;
+  };
+}
+
+export interface TreatmentSource {
+  id: string;
+  organization: string;
+  title: string;
+  url?: string;
+}
+
+export interface TreatmentStepProgress {
+  completed: boolean;
+  completed_at?: string;
+}
+
+export interface TreatmentStep {
+  id: string;
+  sequence: number;
+  title: string;
+  description: string;
+  why_it_matters?: string;
+  timing?: string;
+  is_required: boolean;
+  progress?: TreatmentStepProgress;
+  sources: TreatmentSource[];
+}
+
+export interface TreatmentPhase {
+  id: string;
+  name: string;
+  sequence: number;
+  steps: TreatmentStep[];
+}
+
+export interface TreatmentPlanProgressSummary {
+  completed: number;
+  total: number;
+  percentage: number;
+}
+
+export interface TreatmentPlan {
+  id: string;
+  diagnosis_id: string;
+  disease_id: string;
+  plan_version: string;
+  status: string; // 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
+  created_at: string;
+  completed_at?: string;
+  phases: TreatmentPhase[];
+  progress?: TreatmentPlanProgressSummary;
+}
+
+export interface TreatmentFeedbackCreate {
+  effectiveness_percent: number;
+  comment?: string;
 }
 
 export interface CareRecommendation {

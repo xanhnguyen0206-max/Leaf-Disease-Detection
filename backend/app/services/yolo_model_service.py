@@ -13,7 +13,10 @@ logger = logging.getLogger(__name__)
 TOMATO_CLASSES = {
     0: "Tomato___Bacterial_spot",
     1: "Tomato___Early_blight",
-    2: "Tomato___Late_blight"
+    2: "Tomato___Late_blight",
+    3: "Tomato___Septoria_leaf_spot",
+    4: "Tomato___Leaf_mold",
+    5: "Tomato___Powdery_mildew"
 }
 
 # Human-friendly Vietnamese display names
@@ -21,6 +24,9 @@ TOMATO_DISPLAY_NAMES = {
     "Tomato___Bacterial_spot": "Bệnh đốm vi khuẩn cà chua (Bacterial Spot)",
     "Tomato___Early_blight": "Bệnh úa sớm cà chua (Early Blight)",
     "Tomato___Late_blight": "Bệnh sương mai cà chua (Late Blight)",
+    "Tomato___Septoria_leaf_spot": "Bệnh đốm mắt cua cà chua (Septoria Leaf Spot)",
+    "Tomato___Leaf_mold": "Bệnh nấm mốc lá cà chua (Leaf Mold)",
+    "Tomato___Powdery_mildew": "Bệnh phấn trắng cà chua (Powdery Mildew)",
     "Healthy": "Không phát hiện dấu hiệu bệnh rõ ràng",
     "no_detection": "Không phát hiện dấu hiệu bệnh rõ ràng"
 }

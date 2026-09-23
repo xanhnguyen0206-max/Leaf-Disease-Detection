@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Float, DateTime, Text, ForeignKey, JSON, Boolean
+from sqlalchemy import Column, String, Float, DateTime, Text, ForeignKey, JSON, Boolean, Integer
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 import uuid
@@ -26,7 +26,17 @@ class DiagnosisHistory(Base):
     detected_diseases = Column(JSON, nullable=True)
     is_multi_disease = Column(Boolean, nullable=True, default=False)
     recommendations = Column(JSON, nullable=True)
+    
+    # AI Fallback metadata
+    fallback_used = Column(Boolean, nullable=True, default=False)
+    final_source = Column(String, nullable=True, default="yolo")
+    yolo_result = Column(JSON, nullable=True)
+    ai_result = Column(JSON, nullable=True)
+    fallback_status = Column(String, nullable=True, default="not_configured")
+    
     created_at = Column(DateTime, default=get_utc_now)
+
+    treatment_plans = relationship("TreatmentPlan", back_populates="diagnosis", cascade="all, delete-orphan")
 
 class Disease(Base):
     __tablename__ = "diseases"
@@ -82,3 +92,86 @@ class CareRecommendation(Base):
     priority = Column(String, default="medium")
 
     disease_obj = relationship("Disease", back_populates="recommendations")
+
+class TreatmentPlan(Base):
+    __tablename__ = "treatment_plans"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    diagnosis_id = Column(String, ForeignKey("diagnosis_history.id"), nullable=False)
+    disease_id = Column(String, ForeignKey("diseases.id"), nullable=False)
+    plan_version = Column(String, nullable=False, default="1.0")
+    status = Column(String, nullable=False, default="NOT_STARTED") # NOT_STARTED, IN_PROGRESS, COMPLETED
+    created_at = Column(DateTime, default=get_utc_now)
+    completed_at = Column(DateTime, nullable=True)
+
+    diagnosis = relationship("DiagnosisHistory", back_populates="treatment_plans")
+    disease = relationship("Disease", backref="treatment_plans")
+    phases = relationship("TreatmentPhase", back_populates="plan", cascade="all, delete-orphan", order_by="TreatmentPhase.sequence")
+    feedbacks = relationship("TreatmentFeedback", back_populates="plan", cascade="all, delete-orphan")
+
+
+class TreatmentPhase(Base):
+    __tablename__ = "treatment_phases"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    treatment_plan_id = Column(String, ForeignKey("treatment_plans.id"), nullable=False)
+    name = Column(String, nullable=False)
+    sequence = Column(Integer, nullable=False)
+
+    plan = relationship("TreatmentPlan", back_populates="phases")
+    steps = relationship("TreatmentStep", back_populates="phase", cascade="all, delete-orphan", order_by="TreatmentStep.sequence")
+
+
+class TreatmentStep(Base):
+    __tablename__ = "treatment_steps"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    treatment_phase_id = Column(String, ForeignKey("treatment_phases.id"), nullable=False)
+    sequence = Column(Integer, nullable=False)
+    title = Column(String, nullable=False)
+    description = Column(Text, nullable=False)
+    why_it_matters = Column(Text, nullable=True)
+    timing = Column(String, nullable=True) # e.g., "IMMEDIATE", "WEEKLY", "CONDITIONAL"
+    is_required = Column(Boolean, default=True)
+
+    phase = relationship("TreatmentPhase", back_populates="steps")
+    progress = relationship("TreatmentStepProgress", uselist=False, back_populates="step", cascade="all, delete-orphan")
+    sources = relationship("TreatmentSource", back_populates="step", cascade="all, delete-orphan")
+
+
+class TreatmentStepProgress(Base):
+    __tablename__ = "treatment_step_progress"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    treatment_step_id = Column(String, ForeignKey("treatment_steps.id"), nullable=False, unique=True)
+    completed = Column(Boolean, default=False)
+    completed_at = Column(DateTime, nullable=True)
+
+    step = relationship("TreatmentStep", back_populates="progress")
+
+
+class TreatmentSource(Base):
+    __tablename__ = "treatment_sources"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    treatment_step_id = Column(String, ForeignKey("treatment_steps.id"), nullable=False)
+    organization = Column(String, nullable=False)
+    title = Column(String, nullable=False)
+    url = Column(String, nullable=True)
+    accessed_at = Column(DateTime, nullable=True)
+
+    step = relationship("TreatmentStep", back_populates="sources")
+
+
+class TreatmentFeedback(Base):
+    __tablename__ = "treatment_feedback"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    diagnosis_id = Column(String, ForeignKey("diagnosis_history.id"), nullable=False)
+    treatment_plan_id = Column(String, ForeignKey("treatment_plans.id"), nullable=False)
+    effectiveness_percent = Column(Integer, nullable=False)
+    comment = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=get_utc_now)
+
+    plan = relationship("TreatmentPlan", back_populates="feedbacks")
+

@@ -24,6 +24,11 @@ class DiagnosisResult(BaseModel):
     detections: Optional[List[DetectionItem]] = []
     detected_diseases: Optional[List[DetectedDiseaseGroup]] = []
     is_multi_disease: Optional[bool] = False
+    fallback_used: Optional[bool] = False
+    final_source: Optional[str] = "yolo"
+    yolo_result: Optional[Any] = None
+    ai_result: Optional[Any] = None
+    fallback_status: Optional[str] = "not_configured"
 
 class DiagnosisHistoryResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -42,4 +47,9 @@ class DiagnosisHistoryResponse(BaseModel):
     detections: Optional[Any] = None
     detected_diseases: Optional[Any] = None
     is_multi_disease: Optional[bool] = False
+    fallback_used: Optional[bool] = False
+    final_source: Optional[str] = "yolo"
+    yolo_result: Optional[Any] = None
+    ai_result: Optional[Any] = None
+    fallback_status: Optional[str] = "not_configured"
 

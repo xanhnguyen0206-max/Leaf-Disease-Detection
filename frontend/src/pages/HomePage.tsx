@@ -72,8 +72,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             </div>
 
             <div className="glass-panel p-4 rounded-xl flex justify-between items-center border-t border-primary-container">
-              <p className="text-xs text-on-surface-variant">Độ tin cậy mô hình</p>
-              <p className="text-xl font-bold text-primary-container">98.4%</p>
+              <p className="text-xs text-on-surface-variant">Tỉ lệ chính xác thử nghiệm</p>
+              <p className="text-xl font-bold text-primary-container">~80%</p>
             </div>
           </div>
         </div>
@@ -81,20 +81,25 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
       {/* Statistics Section */}
       <section className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="bg-surface-container p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
-          <span className="material-symbols-outlined text-primary-container text-3xl">coronavirus</span>
-          <h3 className="text-3xl font-extrabold text-on-surface">50+</h3>
-          <p className="text-xs text-on-surface-variant">Bệnh cây trồng được hỗ trợ</p>
+        <div className="bg-surface-container p-6 rounded-2xl border border-white/5 flex flex-col justify-between min-h-[160px]">
+          <span className="material-symbols-outlined text-primary-container text-3xl mb-4">coronavirus</span>
+          <div className="mt-auto flex flex-col gap-1">
+            <h3 className="text-3xl font-extrabold text-on-surface tracking-tight">7+</h3>
+            <p className="text-xs text-on-surface-variant font-medium leading-relaxed">Bệnh cây được hỗ trợ</p>
+          </div>
         </div>
-        <div className="bg-surface-container p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
-          <span className="material-symbols-outlined text-primary-container text-3xl">forest</span>
-          <h3 className="text-3xl font-extrabold text-on-surface">10+</h3>
-          <p className="text-xs text-on-surface-variant">Loài cây nông nghiệp chính</p>
+        <div className="bg-surface-container p-6 rounded-2xl border border-white/5 flex flex-col justify-between min-h-[160px]">
+          <span className="material-symbols-outlined text-primary-container text-3xl mb-4">center_focus_strong</span>
+          <div className="mt-auto flex flex-col gap-1">
+            <p className="text-xs text-on-surface-variant font-medium leading-relaxed">Model xử lý ảnh lá cây cà chua</p>
+          </div>
         </div>
-        <div className="bg-surface-container p-6 rounded-2xl border border-white/5 flex flex-col gap-2 col-span-2 md:col-span-1 emerald-glow border-t-primary-container/50">
-          <span className="material-symbols-outlined text-primary-container text-3xl">verified</span>
-          <h3 className="text-3xl font-extrabold text-primary-container">95%+</h3>
-          <p className="text-xs text-on-surface-variant">Chính xác thử nghiệm</p>
+        <div className="bg-surface-container p-6 rounded-2xl border border-white/5 flex flex-col justify-between min-h-[160px] col-span-2 md:col-span-1 emerald-glow border-t-primary-container/50">
+          <span className="material-symbols-outlined text-primary-container text-3xl mb-4">verified</span>
+          <div className="mt-auto flex flex-col gap-1">
+            <h3 className="text-3xl font-extrabold text-primary-container tracking-tight">~80%</h3>
+            <p className="text-xs text-on-surface-variant font-medium leading-relaxed">Tỉ lệ chính xác thử nghiệm</p>
+          </div>
         </div>
       </section>
 

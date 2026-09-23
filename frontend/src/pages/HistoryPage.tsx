@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { fetchHistory, deleteHistoryItem } from '../services/api';
 import { DiagnosisResult } from '../types';
 
-export const HistoryPage: React.FC = () => {
+interface Props {
+  onOpenJourney?: (diagnosisId: string) => void;
+}
+
+export const HistoryPage: React.FC<Props> = ({ onOpenJourney }) => {
   const [history, setHistory] = useState<DiagnosisResult[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,33 +60,74 @@ export const HistoryPage: React.FC = () => {
               key={item.id}
               className="glass-panel p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border border-white/5 hover:border-primary-container/30 transition-all"
             >
-              <div className="flex items-center gap-4">
-                {item.image_url && (
-                  <img
-                    src={item.image_url}
-                    alt={item.disease}
-                    className="w-16 h-16 rounded-xl object-cover border border-white/10"
-                  />
-                )}
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-secondary">{item.plant}</span>
-                    <span className="text-[10px] text-on-surface-variant">• {new Date(item.created_at).toLocaleDateString('vi-VN')}</span>
+              <div className="flex flex-col gap-4 flex-1">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div className="flex items-center gap-4">
+                    {item.image_url && (
+                      <img
+                        src={item.image_url}
+                        alt={item.disease}
+                        className="w-16 h-16 rounded-xl object-cover border border-white/10 shrink-0"
+                      />
+                    )}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold text-secondary">{item.plant}</span>
+                        <span className="text-[10px] text-on-surface-variant">• {new Date(item.created_at).toLocaleDateString('vi-VN')}</span>
+                      </div>
+                      <h3 className="text-base font-bold text-on-surface mt-0.5">{item.disease}</h3>
+                      <p className="text-xs text-primary-container font-semibold mt-1">
+                        Độ tin cậy: {Math.round(item.confidence * 100)}%
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-base font-bold text-on-surface mt-0.5">{item.disease}</h3>
-                  <p className="text-xs text-primary-container font-semibold mt-1">
-                    Độ tin cậy: {Math.round(item.confidence * 100)}%
-                  </p>
+                  
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="text-xs text-error/80 hover:text-error hover:bg-error/10 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 self-end md:self-start shrink-0"
+                  >
+                    <span className="material-symbols-outlined text-sm">delete</span>
+                    Xóa
+                  </button>
                 </div>
-              </div>
 
-              <button
-                onClick={() => handleDelete(item.id)}
-                className="text-xs text-error/80 hover:text-error hover:bg-error/10 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
-              >
-                <span className="material-symbols-outlined text-sm">delete</span>
-                Xóa bản ghi
-              </button>
+                {/* Treatment Progress */}
+                {item.treatment_plan_summary ? (
+                  <div className="bg-surface-container-low p-3 rounded-xl border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex-1 flex flex-col gap-1.5">
+                      <div className="flex justify-between items-center text-xs font-medium text-on-surface-variant">
+                        <span>Lộ trình chăm sóc</span>
+                        <span>{item.treatment_plan_summary.completed} / {item.treatment_plan_summary.total} bước</span>
+                      </div>
+                      <div className="h-1.5 bg-surface-container rounded-full overflow-hidden w-full">
+                        <div 
+                          className="h-full bg-primary transition-all duration-500 ease-out"
+                          style={{ width: `${item.treatment_plan_summary.percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      onClick={() => onOpenJourney && onOpenJourney(item.id)}
+                      className="text-xs font-semibold px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-1 shrink-0"
+                    >
+                      {item.treatment_plan_summary.percentage === 0 ? 'Bắt đầu lộ trình' :
+                       item.treatment_plan_summary.percentage === 100 ? 'Xem kết quả' : 'Tiếp tục lộ trình'}
+                      <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex justify-end mt-1">
+                    <button 
+                      onClick={() => onOpenJourney && onOpenJourney(item.id)}
+                      className="text-xs font-semibold px-4 py-2 rounded-lg text-primary hover:bg-primary/10 transition-all flex items-center justify-center gap-1"
+                    >
+                      Chi tiết chẩn đoán
+                      <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>

@@ -13,7 +13,7 @@ export const DiseaseLibraryPage: React.FC<DiseaseLibraryProps> = ({ onSelectDise
   const [selectedPlant, setSelectedPlant] = useState('Tất cả');
   const [loading, setLoading] = useState(true);
 
-  const plants = ['Tất cả', 'Cà chua', 'Khoai tây', 'Táo', 'Ngô'];
+  const plants = ['Tất cả', 'Cà chua'];
 
   useEffect(() => {
     loadDiseases();

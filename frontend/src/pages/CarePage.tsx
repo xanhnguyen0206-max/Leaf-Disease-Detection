@@ -5,7 +5,7 @@ interface CarePageProps {
 }
 
 export const CarePage: React.FC<CarePageProps> = ({ onDiagnoseNow }) => {
-  const [activeTab, setActiveTab] = useState<'principles' | 'checklist' | 'ipm' | 'safety'>('principles');
+  const [activeTab, setActiveTab] = useState<'principles' | 'checklist' | 'ipm' | 'safety' | 'specific_diseases'>('principles');
 
   const principles = [
     {
@@ -181,6 +181,7 @@ export const CarePage: React.FC<CarePageProps> = ({ onDiagnoseNow }) => {
           { id: 'checklist', label: 'Sổ tay Kiểm tra 7 Bước Hàng tuần', icon: 'fact_check' },
           { id: 'ipm', label: 'Quy trình Quản lý IPM 10 Bước', icon: 'shield' },
           { id: 'safety', label: 'An toàn Thuốc BVTV & Kháng thuốc', icon: 'health_and_safety' },
+          { id: 'specific_diseases', label: 'Đặc trị Bệnh Phổ biến', icon: 'coronavirus' },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -381,6 +382,56 @@ export const CarePage: React.FC<CarePageProps> = ({ onDiagnoseNow }) => {
               <li>Kết hợp hoạt chất lưu dẫn chuyên biệt với hoạt chất tiếp xúc đa điểm (Multi-site như Mancozeb, Chlorothalonil).</li>
               <li>Không bao giờ phun dưới liều khuyến cáo của nhà sản xuất.</li>
             </ul>
+          </div>
+        </section>
+      )}
+
+      {/* TAB 5: SPECIFIC DISEASES (Septoria, Leaf Mold, Powdery Mildew) */}
+      {activeTab === 'specific_diseases' && (
+        <section className="flex flex-col gap-6">
+          <div className="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col gap-4">
+            <div className="flex items-center gap-2 text-primary-container">
+              <span className="material-symbols-outlined text-2xl">coronavirus</span>
+              <h3 className="text-lg font-bold text-on-surface">Đặc trị các bệnh hại lá phổ biến</h3>
+            </div>
+            <p className="text-xs text-on-surface-variant leading-relaxed">
+              Hướng dẫn nhận diện và điều trị chuyên sâu cho các bệnh nấm thường gặp gây thiệt hại nặng trên cà chua và cây họ Cà.
+            </p>
+
+            <div className="flex flex-col gap-5 mt-2">
+              {/* Septoria */}
+              <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20 flex flex-col gap-2">
+                <h4 className="text-sm font-bold text-emerald-400">1. Đốm mắt cua (Septoria Leaf Spot)</h4>
+                <p className="text-[11px] text-on-surface-variant">
+                  <strong>Triệu chứng:</strong> Đốm nhỏ hình tròn (1-2mm), viền nâu đậm, tâm xám nhạt đục lỗ chỗ. Lây từ dưới gốc lên ngọn.
+                </p>
+                <p className="text-[11px] text-on-surface-variant">
+                  <strong>Cách trị:</strong> Luân canh cây trồng; loại bỏ lá bị bệnh; phun thuốc trị nấm có gốc Chlorothalonil hoặc Copper.
+                </p>
+              </div>
+
+              {/* Leaf Mold */}
+              <div className="p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20 flex flex-col gap-2">
+                <h4 className="text-sm font-bold text-yellow-400">2. Nấm mốc lá (Leaf Mold - Passalora fulva)</h4>
+                <p className="text-[11px] text-on-surface-variant">
+                  <strong>Triệu chứng:</strong> Đốm vàng nhạt ở mặt trên lá, mặt dưới nổi lớp nấm mốc màu ô liu hoặc nâu tím. Rất dễ bùng phát trong nhà màng ẩm.
+                </p>
+                <p className="text-[11px] text-on-surface-variant">
+                  <strong>Cách trị:</strong> Tăng cường thông gió nhà màng (độ ẩm &lt; 85%); giảm mật độ trồng; sử dụng giống kháng bệnh; phun thuốc gốc Mancozeb hoặc Difenoconazole.
+                </p>
+              </div>
+
+              {/* Powdery Mildew */}
+              <div className="p-4 rounded-xl bg-slate-400/10 border border-slate-400/30 flex flex-col gap-2">
+                <h4 className="text-sm font-bold text-slate-300">3. Nấm phấn trắng (Powdery Mildew)</h4>
+                <p className="text-[11px] text-on-surface-variant">
+                  <strong>Triệu chứng:</strong> Lớp bột màu trắng như phấn phủ trên mặt lá, làm lá vàng úa và rụng sớm. Phát triển mạnh ở nhiệt độ khô ấm và thiếu nắng.
+                </p>
+                <p className="text-[11px] text-on-surface-variant">
+                  <strong>Cách trị:</strong> Phun lưu huỳnh thấm ướt (chú ý không phun khi trời quá nóng), dung dịch Bicarbonate hoặc dầu Neem. Giữ lá khô ráo.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       )}

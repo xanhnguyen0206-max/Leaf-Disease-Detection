@@ -22,6 +22,16 @@ def _ensure_schema_columns():
                     conn.execute(text("ALTER TABLE diagnosis_history ADD COLUMN detected_diseases JSON"))
                 if "is_multi_disease" not in diag_cols:
                     conn.execute(text("ALTER TABLE diagnosis_history ADD COLUMN is_multi_disease BOOLEAN DEFAULT 0"))
+                if "fallback_used" not in diag_cols:
+                    conn.execute(text("ALTER TABLE diagnosis_history ADD COLUMN fallback_used BOOLEAN DEFAULT 0"))
+                if "final_source" not in diag_cols:
+                    conn.execute(text("ALTER TABLE diagnosis_history ADD COLUMN final_source VARCHAR DEFAULT 'yolo'"))
+                if "yolo_result" not in diag_cols:
+                    conn.execute(text("ALTER TABLE diagnosis_history ADD COLUMN yolo_result JSON"))
+                if "ai_result" not in diag_cols:
+                    conn.execute(text("ALTER TABLE diagnosis_history ADD COLUMN ai_result JSON"))
+                if "fallback_status" not in diag_cols:
+                    conn.execute(text("ALTER TABLE diagnosis_history ADD COLUMN fallback_status VARCHAR DEFAULT 'not_configured'"))
                 conn.commit()
 
             # 2. diseases table migrations
@@ -562,6 +572,243 @@ def seed_database():
             "care": [
                 {"category": "Giống & Dinh dưỡng", "title": "Chọn giống kháng & Bổ sung Kali", "description": "Sử dụng giống ngô lai kháng rỉ sắt và bón đủ phân Kali để củng cố vách tế bào lá.", "priority": "high"},
                 {"category": "Mật độ", "title": "Giữ khoảng cách hàng hợp lý", "description": "Không trồng quá dày để ánh nắng xuyên qua tán lá, giảm thời gian lá ướt sương.", "priority": "medium"}
+            ]
+        },
+        {
+            "id": "tomato_septoria_leaf_spot",
+            "name": "Bệnh đốm mắt cua cà chua",
+            "scientific_name": "Septoria lycopersici",
+            "english_name": "Septoria Leaf Spot of Tomato",
+            "plant": "Cà chua",
+            "severity": "Trung bình",
+            "description": "Nấm Septoria lycopersici gây các đốm nhỏ có tâm màu xám trắng rải rác trên lá, dẫn đến rụng lá sớn.",
+            "overview": "Bệnh đốm mắt cua (Septoria Leaf Spot) là một trong những bệnh tàn phá tán lá phổ biến nhất ở cà chua, đặc biệt trong các vùng có lượng mưa mùa hè cao. Nó không tấn công trực tiếp vào quả nhưng làm giảm nghiêm trọng năng suất và khiến quả bị cháy nắng do mất tán lá bảo vệ.",
+            "pathogen": "Nấm Septoria lycopersici Speg.",
+            "favorable_conditions": "Nhiệt độ ấm (20°C - 25°C), lá ẩm ướt liên tục, lượng mưa cao và độ ẩm cao.",
+            "transmission": [
+                "Bào tử văng lên từ tàn dư cây trồng trong đất",
+                "Phát tán nhờ gió và nước bắn (mưa, tưới phun)",
+                "Côn trùng, thiết bị nông nghiệp và tay người"
+            ],
+            "risk_level_explanation": "Mức độ Trung bình đến Cao: Mặc dù hiếm khi giết chết cây, bệnh khiến lá rụng nghiêm trọng làm quả chậm chín, giảm kích thước và chất lượng.",
+            "symptoms": [
+                "Đốm nhỏ hình tròn viền nâu sẫm, tâm xám trắng",
+                "Chấm đen li ti (quả thể nấm) ở tâm vết đốm",
+                "Lá vàng và rụng dần từ gốc lên ngọn"
+            ],
+            "early_symptoms": [
+                "Đốm nhỏ li ti ngậm nước trên lá sát mặt đất",
+                "Đốm dần phát triển thành dạng tròn đường kính 1.5 - 3mm"
+            ],
+            "mid_symptoms": [
+                "Tâm đốm chuyển sang màu xám nhạt hoặc trắng với viền tối màu",
+                "Xuất hiện các đốm đen nhỏ (pycnidia) ở giữa vết bệnh"
+            ],
+            "severe_symptoms": [
+                "Các vết bệnh liên kết khiến toàn bộ lá úa vàng",
+                "Lá chết và rụng sớm làm trơ gốc"
+            ],
+            "similar_diseases_diff": [
+                "Khác với Đốm vi khuẩn: Đốm vi khuẩn không có tâm màu xám nhạt và không có các chấm đen pycnidia.",
+                "Khác với Úa sớm: Úa sớm có vòng tròn đồng tâm, trong khi Septoria có đốm nhỏ hơn nhiều với tâm sáng màu."
+            ],
+            "prevention_before_planting": [
+                "Sử dụng giống kháng bệnh",
+                "Xử lý hạt giống bằng nước nóng 50°C trong 25 phút",
+                "Luân canh cây trồng ngoài họ Cà ít nhất 2 năm"
+            ],
+            "prevention_during_growth": [
+                "Làm giàn cao để tăng độ thông thoáng",
+                "Trải màng phủ nông nghiệp để ngăn nấm bắn từ đất lên",
+                "Tỉa bớt lá sát mặt đất"
+            ],
+            "water_management": "Tưới nước nhỏ giọt hoặc tưới rãnh, tuyệt đối không tưới lên lá. Tưới vào sáng sớm để cây kịp khô.",
+            "nutrition_management": "Cung cấp dinh dưỡng đầy đủ, tránh thiếu hụt đạm và kali giúp cây chống chịu tốt hơn.",
+            "density_management": "Trồng khoảng cách rộng để không khí lưu thông tốt, giảm thời gian lá đọng sương.",
+            "field_sanitation": "Thu dọn toàn bộ lá bệnh rơi rụng, diệt cỏ dại họ Cà xung quanh.",
+            "pruning_guide": "Tỉa bỏ chồi nách vô hiệu, loại bỏ lá bệnh và tiêu hủy, sát trùng kéo tỉa bằng dung dịch cồn 70%.",
+            "crop_rotation_guide": "Không trồng liên tục cà chua, khoai tây, cà tím trên một mảnh đất.",
+            "biological_control": [
+                "Sử dụng chế phẩm Trichoderma harzianum để đối kháng mầm bệnh trong đất",
+                "Sử dụng Bacillus subtilis phun qua lá để tạo lớp bảo vệ"
+            ],
+            "chemical_control_principles": [
+                "Phun thuốc BVTV gốc hoạt chất Chlorothalonil hoặc Mancozeb khi bệnh chớm xuất hiện",
+                "Tuân thủ nghiêm ngặt thời gian cách ly (PHI)"
+            ],
+            "aftercare_monitoring": [
+                "Kiểm tra định kỳ các lá sát gốc 2 lần/tuần",
+                "Sau mưa phải kiểm tra tốc độ phát tán của vết đốm"
+            ],
+            "common_mistakes": [
+                "Tưới phun mưa vào chiều muộn",
+                "Để lá bệnh rơi rụng dưới đất mà không tiêu hủy"
+            ],
+            "when_to_seek_help": "Khi bệnh lây lan mất kiểm soát lên tầng lá trên cùng dù đã phun thuốc.",
+            "safety_notes": "Sử dụng đầy đủ PPE khi phun thuốc hóa học.",
+            "sources": [
+                "Cornell Cooperative Extension - Septoria Leaf Spot of Tomato",
+                "Missouri Botanical Garden - Septoria Leaf Spot on Tomatoes"
+            ],
+            "image_url": "/images/diseases/tomato_septoria_leaf_spot.jpg",
+            "care": [
+                {"category": "Canh tác", "title": "Giữ tán lá khô ráo", "description": "Ngừng tưới phun sương, chuyển sang tưới gốc và tăng cường thông gió.", "priority": "high"},
+                {"category": "Vệ sinh", "title": "Cắt bỏ lá bệnh", "description": "Lập tức cắt bỏ các lá có đốm tâm xám và mang đi tiêu hủy.", "priority": "high"}
+            ]
+        },
+        {
+            "id": "tomato_leaf_mold",
+            "name": "Bệnh nấm mốc lá cà chua",
+            "scientific_name": "Passalora fulva (Fulvia fulva)",
+            "english_name": "Tomato Leaf Mold",
+            "plant": "Cà chua",
+            "severity": "Cao",
+            "description": "Nấm Passalora fulva gây mốc màu xám nhạt đục mặt dưới lá, trong khi mặt trên xuất hiện đốm vàng.",
+            "overview": "Bệnh nấm mốc lá là dịch hại rất nguy hiểm đối với cà chua trồng trong nhà màng (greenhouse). Bệnh đặc trưng bởi sự phát triển của nấm mốc ở mặt dưới lá và phá hủy từ từ các lá già, làm cây còi cọc và rụng hoa.",
+            "pathogen": "Nấm Passalora fulva (đồng nghĩa: Fulvia fulva, Cladosporium fulvum)",
+            "favorable_conditions": "Độ ẩm cao >85% và nhiệt độ từ 20°C - 24°C, thông gió kém trong nhà màng.",
+            "transmission": [
+                "Bào tử nhẹ, phát tán rất xa qua không khí",
+                "Tồn tại trên xác thực vật, vách nhà màng, hạt giống",
+                "Qua con người, quần áo và dụng cụ tiếp xúc"
+            ],
+            "risk_level_explanation": "Mức độ Cao: Gây rụng lá hàng loạt trong môi trường kín, dẫn đến thiếu hụt quang hợp và rụng quả non.",
+            "symptoms": [
+                "Đốm màu vàng xanh trên mặt lá",
+                "Mốc xám nhạt đến nâu ô-liu dưới mặt lá",
+                "Lá khô cong và rụng"
+            ],
+            "early_symptoms": [
+                "Các đốm màu xanh nhạt hoặc vàng nhạt xuất hiện ở mặt trên của lá cũ",
+                "Không có ranh giới rõ ràng giữa đốm và mô lá khỏe"
+            ],
+            "mid_symptoms": [
+                "Mặt dưới đốm phát triển lớp mốc tơ màu xám nhạt hoặc xanh xám ô-liu",
+                "Các vết đốm lan rộng, hòa vào nhau làm toàn bộ lá chuyển vàng"
+            ],
+            "severe_symptoms": [
+                "Lớp mốc chuyển sang màu tía nhạt hoặc nâu đen, lá chết, nhăn nheo và rụng",
+                "Hoa bị lây nhiễm có thể rụng trước khi đậu quả"
+            ],
+            "similar_diseases_diff": [
+                "Khác Sương mai: Sương mai có mốc trắng (chỉ xuất hiện trong điều kiện cực ẩm), còn mốc lá có màu xám ô-liu đặc trưng.",
+                "Khác Phấn trắng: Phấn trắng có mốc ở cả mặt trên và dưới, mốc lá tập trung ở mặt dưới."
+            ],
+            "prevention_before_planting": [
+                "Trồng giống lai F1 kháng nấm mốc lá",
+                "Xử lý hạt giống bằng dung dịch khử trùng",
+                "Khử trùng toàn bộ nhà màng sau vụ trước"
+            ],
+            "prevention_during_growth": [
+                "Tăng cường thông gió, trang bị quạt tản nhiệt trong nhà màng",
+                "Sử dụng nhiệt độ sưởi ban đêm để giảm ẩm",
+                "Tỉa lá già tạo luồng gió dưới gốc"
+            ],
+            "water_management": "Tuyệt đối giữ nhà màng khô ráo, tưới lượng nước vừa đủ vào đầu ngày.",
+            "nutrition_management": "Cung cấp dinh dưỡng ổn định, tránh thừa đạm.",
+            "density_management": "Không trồng quá dày đặc, giữ khoảng cách tối thiểu 50cm mỗi cây.",
+            "field_sanitation": "Thu dọn sạch rác, tàn dư, khử trùng ủng khi vào nhà màng.",
+            "pruning_guide": "Tỉa lá và cành rậm rạp thường xuyên.",
+            "crop_rotation_guide": "Luân canh hoặc làm sạch giá thể, nhà màng.",
+            "biological_control": [
+                "Dùng nấm đối kháng để ức chế mầm nấm P. fulva"
+            ],
+            "chemical_control_principles": [
+                "Phun thuốc gốc Đồng hoặc Chlorothalonil khi có dấu hiệu bệnh",
+                "Sử dụng nhóm thuốc nội hấp (Difenoconazole) nếu bệnh phát tán"
+            ],
+            "aftercare_monitoring": [
+                "Giám sát độ ẩm không khí (sử dụng ẩm kế kế sát tán cây)",
+                "Kiểm tra mặt dưới lá 2 ngày/lần"
+            ],
+            "common_mistakes": [
+                "Đóng kín nhà màng vào ban đêm làm độ ẩm bão hòa 100%",
+                "Chỉ kiểm tra mặt trên của lá"
+            ],
+            "when_to_seek_help": "Khi lớp mốc bắt đầu có màu nâu lan rộng nhanh chóng lên tầng lá thứ 3.",
+            "safety_notes": "Đảm bảo trang bị đồ bảo hộ PPE đạt tiêu chuẩn.",
+            "sources": [
+                "University of Minnesota Extension - Leaf mold of tomato",
+                "OMAFRA - Tomato Leaf Mold"
+            ],
+            "image_url": "/images/diseases/tomato_leaf_mold.jpg",
+            "care": [
+                {"category": "Thông thoáng", "title": "Giảm độ ẩm không khí", "description": "Kiểm soát độ ẩm nhà lưới <80%, bật quạt lưu thông và giảm mật độ lá.", "priority": "high"},
+                {"category": "Thuốc BVTV", "title": "Sử dụng thuốc diệt nấm phổ rộng", "description": "Sử dụng các loại thuốc chứa Chlorothalonil hoặc Mancozeb luân phiên.", "priority": "high"}
+            ]
+        },
+        {
+            "id": "tomato_powdery_mildew",
+            "name": "Bệnh phấn trắng cà chua",
+            "scientific_name": "Oidium neolycopersici / Leveillula taurica",
+            "english_name": "Powdery Mildew of Tomato",
+            "plant": "Cà chua",
+            "severity": "Trung bình",
+            "description": "Nấm gây bệnh tạo ra lớp mốc trắng mịn như bột rắc rải rác trên bề mặt lá, làm cản trở quang hợp và gây hoại tử.",
+            "overview": "Bệnh phấn trắng là một bệnh tàn phá diện rộng, phổ biến ở những vùng trồng thiếu ẩm nhưng vẫn có đủ độ ẩm bão hòa cực ngắn trong ngày. Bệnh phủ màng mốc lên bề mặt quang hợp, làm giảm năng suất đáng kể do lá chết sớm.",
+            "pathogen": "Oidium neolycopersici (Mốc mặt trên) và Leveillula taurica (Mốc mặt dưới).",
+            "favorable_conditions": "Nhiệt độ 20°C - 27°C, độ ẩm cao bão hòa nhưng lượng mưa thấp (nước cản trở nấm bào tử mọc).",
+            "transmission": [
+                "Bào tử gió mang đến (có thể bay xa hàng cây số)",
+                "Nhiễm qua tàn dư cây dại họ cà và các cây ký chủ khác"
+            ],
+            "risk_level_explanation": "Mức độ Trung bình: Không làm chết cây ngay nhưng ảnh hưởng lâu dài do giảm nghiêm trọng quá trình tổng hợp Carbohydrate.",
+            "symptoms": [
+                "Đốm mốc như phấn trắng trên lá",
+                "Lá héo khô màng giấy",
+                "Lan ra cuống hoa"
+            ],
+            "early_symptoms": [
+                "Xuất hiện đốm bột nhỏ màu trắng mặt trên hoặc mặt dưới lá (tùy chủng)",
+                "Đốm có thể dễ dàng bị chà xát"
+            ],
+            "mid_symptoms": [
+                "Đốm phấn trắng loang lớn, phủ kín lá làm lá chuyển màu vàng úa"
+            ],
+            "severe_symptoms": [
+                "Các lá rụng, quả nhỏ đi và bị rám nắng do rụng lớp tán bảo vệ"
+            ],
+            "similar_diseases_diff": [
+                "Khác Sương mai: Phấn trắng mốc trên mặt lá và tơi như bột, không có đốm ngậm nước."
+            ],
+            "prevention_before_planting": [
+                "Sử dụng hạt giống kháng hoặc chịu đựng phấn trắng",
+                "Tiêu hủy các loại cây dại có khả năng mang mầm phấn trắng xung quanh"
+            ],
+            "prevention_during_growth": [
+                "Quản lý khoảng cách cây",
+                "Phun bột lưu huỳnh định kỳ"
+            ],
+            "water_management": "Ngược lại với nhiều loại nấm, tưới rửa lá có thể giảm bào tử phấn trắng, tuy nhiên có rủi ro tạo điều kiện cho bệnh khác.",
+            "nutrition_management": "Bổ sung Silic để vách tế bào chắc khỏe hơn.",
+            "density_management": "Tỉa thông thoáng để ánh nắng xuyên xuống cành tầng dưới.",
+            "field_sanitation": "Thu dọn sạch sẽ ruộng đồng.",
+            "pruning_guide": "Tỉa bỏ nhanh chóng các lá có phấn trắng đầu tiên.",
+            "crop_rotation_guide": "Không trồng cà chua gần vườn bầu bí đang nhiễm phấn trắng.",
+            "biological_control": [
+                "Sử dụng dầu neem (Neem oil) hoặc các loại muối Kali bicarbonate",
+                "Phun chế phẩm sinh học Ampelomyces quisqualis (ký sinh nấm phấn trắng)"
+            ],
+            "chemical_control_principles": [
+                "Lưu huỳnh vi lượng, Difenoconazole, Azoxystrobin"
+            ],
+            "aftercare_monitoring": [
+                "Theo dõi lá hằng ngày do bệnh tiến triển rất nhanh"
+            ],
+            "common_mistakes": [
+                "Nghĩ rằng trời nắng ráo sẽ không mắc nấm bệnh",
+                "Sử dụng thuốc quá liều gây cháy lá do Lưu huỳnh"
+            ],
+            "when_to_seek_help": "Khi lớp phấn lây sang hoa hoặc cuống lá.",
+            "safety_notes": "Sử dụng đồ bảo hộ, không phun lưu huỳnh khi nhiệt độ trên 32°C.",
+            "sources": [
+                "UC IPM - Powdery Mildew on Tomato",
+                "Cornell Vegetable Program"
+            ],
+            "image_url": "/images/diseases/tomato_powdery_mildew.jpg",
+            "care": [
+                {"category": "Biện pháp sinh học", "title": "Sử dụng Bicarbonate & Dầu Neem", "description": "Dùng hỗn hợp baking soda hoặc dầu neem phun để trị nấm, chú ý tránh phun khi trời gắt.", "priority": "high"},
+                {"category": "Nông hóa", "title": "Phun Lưu huỳnh", "description": "Lưu huỳnh thấm ướt là biện pháp hữu hiệu đối với nấm phấn trắng.", "priority": "medium"}
             ]
         }
     ]

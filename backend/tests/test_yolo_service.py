@@ -12,14 +12,17 @@ EARLY_BLIGHT_IMAGE = os.path.join(TEST_IMG_DIR, "base_Tomato_Early_blight_00006_
 LATE_BLIGHT_IMAGE = os.path.join(TEST_IMG_DIR, "base_Tomato_Late_blight_00011_jpg.rf.8cf63f3b102bfdded6463ee7057d3f8c_0160.jpg")
 HEALTHY_IMAGE = os.path.join(TEST_IMG_DIR, "ext_heal_H (109)_jpg.rf.W4tL0M9rq4OeeiwbYa37_0027.jpg")
 
-def test_v3_model_loading_success():
-    """Verify that YOLOModelService loads the V3 model into memory with 3 classes at 640x640."""
+def test_v4_model_loading_success():
+    """Verify that YOLOModelService loads the V4 model into memory with 6 classes at 640x640."""
     service = YOLOModelService(model_path=settings.MODEL_PATH, device="cpu")
     assert service.model is not None
-    assert len(service.classes) == 3
+    assert len(service.classes) == 6
     assert service.classes[0] == "Tomato___Bacterial_spot"
     assert service.classes[1] == "Tomato___Early_blight"
     assert service.classes[2] == "Tomato___Late_blight"
+    assert service.classes[3] == "Tomato___Septoria_leaf_spot"
+    assert service.classes[4] == "Tomato___Leaf_mold"
+    assert service.classes[5] == "Tomato___Powdery_mildew"
     assert service.imgsz == 640
 
 def test_model_loading_missing_file():

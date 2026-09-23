@@ -4,7 +4,9 @@ import logging
 from typing import Dict, Any, List, Optional
 from sqlalchemy.orm import Session
 from app.services.model_service import model_service
-from app.database.models import DiagnosisHistory, Disease, CareRecommendation
+from app.services.ai_fallback_service import ai_fallback_service
+from app.database.models import DiagnosisHistory, Disease, CareRecommendation, TreatmentPlan, TreatmentPhase, TreatmentStep, TreatmentSource
+from app.database.treatment_knowledge import TREATMENT_PLANS_KNOWLEDGE
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -14,6 +16,9 @@ DISEASE_DB_ID_MAP = {
     "Tomato___Bacterial_spot": "tomato_bacterial_spot",
     "Tomato___Early_blight": "tomato_early_blight",
     "Tomato___Late_blight": "tomato_late_blight",
+    "Tomato___Septoria_leaf_spot": "tomato_septoria_leaf_spot",
+    "Tomato___Leaf_mold": "tomato_leaf_mold",
+    "Tomato___Powdery_mildew": "tomato_powdery_mildew",
     "Potato___Late_blight": "potato_late_blight",
     "Apple___Powdery_mildew": "apple_powdery_mildew",
     "Corn___Common_rust": "corn_common_rust",
@@ -24,6 +29,9 @@ DISEASE_DISPLAY_MAP = {
     "Tomato___Bacterial_spot": "Bệnh đốm vi khuẩn cà chua",
     "Tomato___Early_blight": "Bệnh úa sớm cà chua",
     "Tomato___Late_blight": "Bệnh sương mai cà chua",
+    "Tomato___Septoria_leaf_spot": "Bệnh đốm mắt cua cà chua",
+    "Tomato___Leaf_mold": "Bệnh nấm mốc lá cà chua",
+    "Tomato___Powdery_mildew": "Bệnh phấn trắng cà chua",
     "Potato___Late_blight": "Bệnh sương mai khoai tây",
     "Apple___Powdery_mildew": "Bệnh phấn trắng táo",
     "Corn___Common_rust": "Bệnh rỉ sắt ngô",
@@ -156,6 +164,67 @@ class PredictionService:
             severity = primary_group["severity"]
             recommendations = primary_group["recommendations"]
 
+        fallback_used = False
+        final_source = "yolo"
+        yolo_result = {
+            "primary_disease": primary_disease,
+            "confidence": confidence,
+            "status": status
+        }
+        ai_result = None
+        fallback_status = "not_configured" if not settings.AI_FALLBACK_ENABLED else "bypassed"
+
+        # AI Fallback Logic
+        if settings.AI_FALLBACK_ENABLED:
+            if status == "no_detection" or confidence < settings.YOLO_HIGH_CONFIDENCE:
+                fallback_status = "triggered"
+                ai_resp = ai_fallback_service.analyze(
+                    image_bytes=file_bytes,
+                    filename=filename,
+                    yolo_disease=primary_disease,
+                    yolo_confidence=confidence
+                )
+                
+                if ai_resp:
+                    fallback_used = True
+                    final_source = "ai_fallback"
+                    fallback_status = "success"
+                    ai_result = ai_resp.model_dump()
+                    
+                    if not ai_resp.is_tomato_leaf or ai_resp.disease in ["NOT_TOMATO_LEAF", "UNCERTAIN"]:
+                        status = "uncertain" if ai_resp.disease == "UNCERTAIN" else "not_tomato_leaf"
+                        primary_disease = ai_resp.disease
+                        disease_name = "Không xác định" if status == "uncertain" else "Không phải lá cà chua"
+                        severity = "Không áp dụng"
+                        confidence = ai_resp.confidence
+                        recommendations = [
+                            {"title": "Kết luận từ AI (Dự phòng)", "description": ai_resp.reason},
+                            {"title": "Đề xuất", "description": "Vui lòng chụp lại ảnh lá cà chua rõ nét hơn."}
+                        ]
+                    else:
+                        # Map back to disease info
+                        new_disease = ai_resp.disease
+                        db_id = DISEASE_DB_ID_MAP.get(new_disease)
+                        disease_record = None
+                        if db_id:
+                            disease_record = db.query(Disease).filter(Disease.id == db_id).first()
+                        if not disease_record:
+                            disease_record = db.query(Disease).filter(Disease.name.ilike(f"%{new_disease}%")).first()
+
+                        if disease_record:
+                            primary_disease = new_disease
+                            disease_name = disease_record.name
+                            confidence = ai_resp.confidence
+                            severity = disease_record.severity
+                            db_care = db.query(CareRecommendation).filter(CareRecommendation.disease_id == disease_record.id).all()
+                            recs = [{"title": c.title, "description": c.description} for c in db_care] if db_care else [
+                                {"title": "Phòng ngừa và xử lý", "description": disease_record.description}
+                            ]
+                            recs.insert(0, {"title": "Kết luận từ AI (Dự phòng)", "description": ai_resp.reason})
+                            recommendations = recs
+                else:
+                    fallback_status = "failed"
+
         diagnosis = DiagnosisHistory(
             id=str(uuid.uuid4()),
             image_url=relative_url,
@@ -169,12 +238,68 @@ class PredictionService:
             detections=detections,
             detected_diseases=detected_diseases_list,
             is_multi_disease=is_multi_disease,
-            recommendations=recommendations
+            recommendations=recommendations,
+            fallback_used=fallback_used,
+            final_source=final_source,
+            yolo_result=yolo_result,
+            ai_result=ai_result,
+            fallback_status=fallback_status
         )
         
         db.add(diagnosis)
         db.commit()
         db.refresh(diagnosis)
+        
+        # Check if we should create a Treatment Plan
+        if status != "no_detection" and fallback_status != "UNCERTAIN" and primary_disease in TREATMENT_PLANS_KNOWLEDGE:
+            plan_data = TREATMENT_PLANS_KNOWLEDGE[primary_disease]
+            
+            # Map disease_id to actual db disease id
+            db_id = DISEASE_DB_ID_MAP.get(primary_disease)
+            if db_id:
+                disease_record = db.query(Disease).filter(Disease.id == db_id).first()
+                if disease_record:
+                    plan = TreatmentPlan(
+                        diagnosis_id=diagnosis.id,
+                        disease_id=disease_record.id,
+                        plan_version=plan_data["plan_version"]
+                    )
+                    db.add(plan)
+                    db.flush() # flush to get plan.id
+                    
+                    for phase_data in plan_data["phases"]:
+                        phase = TreatmentPhase(
+                            treatment_plan_id=plan.id,
+                            name=phase_data["name"],
+                            sequence=phase_data["sequence"]
+                        )
+                        db.add(phase)
+                        db.flush()
+                        
+                        for step_data in phase_data["steps"]:
+                            step = TreatmentStep(
+                                treatment_phase_id=phase.id,
+                                sequence=step_data["sequence"],
+                                title=step_data["title"],
+                                description=step_data["description"],
+                                why_it_matters=step_data.get("why_it_matters"),
+                                timing=step_data.get("timing"),
+                                is_required=step_data.get("is_required", True)
+                            )
+                            db.add(step)
+                            db.flush()
+                            
+                            for source_data in step_data.get("sources", []):
+                                source = TreatmentSource(
+                                    treatment_step_id=step.id,
+                                    organization=source_data["organization"],
+                                    title=source_data["title"],
+                                    url=source_data.get("url")
+                                )
+                                db.add(source)
+                                
+                    db.commit()
+        
         return diagnosis
 
 prediction_service = PredictionService()

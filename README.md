@@ -31,42 +31,43 @@ npm run dev
 
 ## 1. Model Configuration & Switching
 
-The default production model is **LEAF_AI Tomato Disease Detection V3** (`model/tomato_v3/best.pt`), trained at **640x640 resolution** with leaf-safe data augmentation and annotation normalization. It achieves **0.768 mAP@50** on unseen test data, **80.8% detection sensitivity** on tiny Bacterial Spot lesions, and maintains high background specificity.
+The default production model is **LEAF_AI Tomato Disease Detection V4** (`model/tomato_v4/best.pt`). This upgraded model supports 6 classes (including new diseases like Leaf Mold, Powdery Mildew, and Septoria Leaf Spot) and is integrated with our advanced Treatment Journey framework.
 
-The previous **V2 model** (`model/tomato_v2/best.pt`) is preserved as a verified backup and can be activated at any time.
+*Note: The raw and processed Tomato V4 dataset (images) is deliberately excluded from this GitHub repository to avoid large file issues. To retrain the model, you will need to download the dataset externally and place it in the appropriate `training/datasets` structure as required by the training scripts.*
 
-### Default Production Model (V3)
-- **Default Path**: `model/tomato_v3/best.pt`
-- **Input Resolution**: `640x640`
-- **Metadata**: `model/tomato_v3/metadata.json`
-- **Classes**:
-  - `0`: `Tomato___Bacterial_spot` (Bệnh đốm vi khuẩn cà chua)
-  - `1`: `Tomato___Early_blight` (Bệnh úa sớm cà chua)
-  - `2`: `Tomato___Late_blight` (Bệnh sương mai cà chua)
+The previous V2 and V3 models are preserved as verified backups and can be activated at any time.
+
+### Default Production Model (V4)
+- **Default Path**: `model/tomato_v4/best.pt`
+- **Training Config**: `model/tomato_v4/data.yaml`
+- **Classes** (6 total):
+  - `0`: `Tomato___Bacterial_spot`
+  - `1`: `Tomato___Early_blight`
+  - `2`: `Tomato___Late_blight`
+  - `3`: `Tomato___Leaf_Mold`
+  - `4`: `Tomato___powdery_mildew`
+  - `5`: `Tomato___Septoria_leaf_spot`
 
 ### How to Switch Models
 
 You can configure the active model via environment variables or `.env` file without modifying source code:
 
 ```ini
-# Use V3 Model (Default Production):
+# Use V4 Model (Default Production):
 MODEL_TYPE=yolo
-MODEL_VERSION=v3
-MODEL_PATH=model/tomato_v3/best.pt
+MODEL_VERSION=v4
+MODEL_PATH=model/tomato_v4/best.pt
 MODEL_IMG_SIZE=640
 MODEL_CONFIDENCE_THRESHOLD=0.25
 MODEL_DEVICE=cpu
 
-# Or Switch to V2 Backup Model:
-MODEL_VERSION=v2
-MODEL_PATH=model/tomato_v2/best.pt
-MODEL_IMG_SIZE=384
-
-# Or Rollback / Test with Baseline Model:
-MODEL_PATH=model/tomato/best.pt
+# Or Switch to V3 Backup Model:
+MODEL_VERSION=v3
+MODEL_PATH=model/tomato_v3/best.pt
+MODEL_IMG_SIZE=640
 ```
 
-The baseline model at `model/tomato/best.pt` remains preserved for regression testing and benchmarking.
+The baseline models remain preserved for regression testing and benchmarking.
 
 ---
 

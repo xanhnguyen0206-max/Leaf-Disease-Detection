@@ -9,10 +9,17 @@ import { DiseaseDetailPage } from './pages/DiseaseDetailPage';
 import { HistoryPage } from './pages/HistoryPage';
 import { CarePage } from './pages/CarePage';
 import { AboutPage } from './pages/AboutPage';
+import { TreatmentJourneyPage } from './pages/TreatmentJourneyPage';
 
 export const App: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<string>('home');
   const [selectedDiseaseId, setSelectedDiseaseId] = useState<string | null>(null);
+  const [selectedDiagnosisId, setSelectedDiagnosisId] = useState<string | null>(null);
+
+  const handleOpenJourney = (diagnosisId: string) => {
+    setSelectedDiagnosisId(diagnosisId);
+    setCurrentTab('treatment-journey');
+  };
 
   const handleSelectDisease = (id: string) => {
     setSelectedDiseaseId(id);
@@ -42,7 +49,13 @@ export const App: React.FC = () => {
             onNavigateCare={() => setCurrentTab('care')}
           />
         )}
-        {currentTab === 'history' && <HistoryPage />}
+        {currentTab === 'history' && <HistoryPage onOpenJourney={handleOpenJourney} />}
+        {currentTab === 'treatment-journey' && selectedDiagnosisId && (
+          <TreatmentJourneyPage 
+            diagnosisId={selectedDiagnosisId} 
+            onBack={() => setCurrentTab('history')} 
+          />
+        )}
         {currentTab === 'care' && <CarePage onDiagnoseNow={() => setCurrentTab('diagnose')} />}
         {currentTab === 'about' && <AboutPage />}
       </main>
